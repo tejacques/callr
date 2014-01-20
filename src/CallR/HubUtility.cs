@@ -116,6 +116,8 @@ namespace CallR
 
                     site5.Target(site5, clients, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
                     break;
+                default:
+                    throw new ArgumentException("HubUtility currently only supports calling functions with fewer than six arguments", "parameters");
             }
         }
 
