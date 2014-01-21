@@ -14,12 +14,23 @@ namespace CallR.Sample.Hubs
         public void Send(string channel, string name, string message)
         {
             // Call the sendMessage method to update clients.
-            this.SendToGroup(channel, "message", new { channel = channel, name = name, message = message });
+            this.SendToGroup(
+                channel,
+                "message",
+                new {
+                    channel = channel,
+                    name = name,
+                    message = message
+                });
         }
 
         public object GetTest()
         {
-            return new { channel = "TestChannel", name = "TestName", message = "TestMessage" };
+            return new {
+                channel = "TestChannel",
+                name = "TestName",
+                message = "TestMessage"
+            };
         }
 
         public void SendTest()

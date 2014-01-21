@@ -26,7 +26,7 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/// <reference path="jquery-1.6.4-vsdoc.js" />
+/// <reference path="jquery-1.10.2.js" />
 /// <reference path="jquery.signalr-2.0.1.js" />
 
 // Create hubModule to set up and utilize SignalR hubs
@@ -37,7 +37,6 @@ var hubModule = (function () {
     var init = function (hubName) {
 
         var hub = $.connection[hubName];
-        var api = hub.server;
         hub.subscriptions = {};
         
         hub.bindEvent = hub.on;
@@ -123,27 +122,35 @@ var hubModule = (function () {
         hub.api = hub.api || {};
         hub.queueApi = hub.queueApi || {};
 
-        function makeApiFunction (key) {
+        function makeApiFunction(name) {
             return function () {
-                var promise = hub.server[key].apply(this, arguments);
+                var args = [].slice.call(arguments);
+                var promise = hub.server[name].apply(this, arguments);
                 return hub.request(promise);
             };
         }
 
-        function makeQueueApiFunction (key) {
+        function makeQueueApiFunction(name, argumentNames) {
             return function () {
+                var args = [].slice.call(arguments);
                 var request = function () {
-                    return hub.server[key].apply(this, arguments);
+                    return hub.server[name].apply(this, args);
                 };
 
                 return hub.queueRequest(request);
             };
         }
 
+        hub.addAPICall = function (name) {
+            if (hub.server[name]) {
+                hub.api[name] = makeApiFunction(name);
+                hub.queueApi[name] = makeQueueApiFunction(name);
+            }
+        };
+
         for (var key in hub.server) {
             if (hub.server.hasOwnProperty(key)) {
-                hub.api[key] = makeApiFunction(key);
-                hub.queueApi[key] = makeQueueApiFunction(key);
+                hub.addAPICall(key);
             }
         }
 
