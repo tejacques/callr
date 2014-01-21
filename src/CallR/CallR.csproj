@@ -59,6 +59,31 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Scripts\callr-1.0.0.min.js.map">
+      <DependentUpon>callr-1.0.0.js</DependentUpon>
+    </None>
+    <None Include="Scripts\jquery-1.10.2.min.js.map">
+      <DependentUpon>jquery-1.10.2.js</DependentUpon>
+    </None>
+    <None Include="Scripts\jquery.signalR-2.0.1.min.js.map">
+      <DependentUpon>jquery.signalR-2.0.1.js</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Scripts\callr-1.0.0.js" />
+    <Content Include="Scripts\callr-1.0.0.min.js">
+      <DependentUpon>callr-1.0.0.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js">
+      <DependentUpon>jquery-1.10.2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery.signalR-2.0.1.js" />
+    <Content Include="Scripts\jquery.signalR-2.0.1.min.js">
+      <DependentUpon>jquery.signalR-2.0.1.js</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

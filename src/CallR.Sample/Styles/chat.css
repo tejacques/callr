@@ -1,0 +1,43 @@
+﻿button {
+    padding: 0px;
+    margin: 0px;
+    width: 100px;
+    height: 30px;
+}
+
+.app-container {
+    width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid;
+}
+
+.requests-container {
+}
+
+.chat-container {
+}
+
+.messages-container {
+    margin-top: 40px;
+}
+
+.input-label {
+    display: inline-block;
+    width: 100px;
+}
+
+.chat-header {
+    width: 160px;
+    display: inline-block;
+}
+
+.chat-channel {
+    width: 80px;
+    color: red;
+}
+
+.chat-from {
+    width: 80px;
+    color: blue;
+}
