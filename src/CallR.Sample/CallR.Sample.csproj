@@ -78,10 +78,19 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.js">
+      <Link>Scripts\callr-1.0.0.angular.js</Link>
+    </Content>
+    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.min.js">
+      <Link>Scripts\callr-1.0.0.angular.min.js</Link>
+    </Content>
     <Content Include="jQuery.html" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.min.js.map">
+      <Link>Scripts\callr-1.0.0.angular.min.js.map</Link>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

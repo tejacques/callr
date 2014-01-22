@@ -49,13 +49,13 @@ var hubModule = (function () {
         };
 
         var _requestQueue = [];
-        hub.queueRequest = function (request) {
+        function queueRequest (request) {
             var deferred = $.Deferred();
 
             _requestQueue.push([request, deferred]);
 
             return deferred.promise();
-        };
+        }
 
         hub.flushRequests = function (cb) {
             var requestsRemaining = _requestQueue.length;
@@ -101,7 +101,7 @@ var hubModule = (function () {
                 });
             }
 
-            hub.connect().done(function () {
+            hub.connect().then(function () {
                 var len = _requestQueue.length;
                 for (var i = 0; i < len; i++) {
                     _queueRequest(_requestQueue[i][0], _requestQueue[i][1]);
@@ -111,10 +111,10 @@ var hubModule = (function () {
             });
         };
 
-        hub.request = function (promise) {
+        function _request (promise) {
             hub.flushRequests();
             return promise;
-        };
+        }
 
         hub.api = hub.api || {};
         hub.queueApi = hub.queueApi || {};
@@ -126,8 +126,8 @@ var hubModule = (function () {
                     return hub.server[name].apply(this, args);
                 };
 
-                var promise = hub.queueRequest(request);
-                return hub.request(promise);
+                var promise = queueRequest(request);
+                return _request(promise);
             };
         }
 
@@ -138,7 +138,7 @@ var hubModule = (function () {
                     return hub.server[name].apply(this, args);
                 };
 
-                return hub.queueRequest(request);
+                return queueRequest(request);
             };
         }
 
