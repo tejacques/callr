@@ -26,9 +26,6 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/// <reference path="jquery-1.10.2.js" />
-/// <reference path="jquery.signalr-2.0.1.js" />
-
 // Create hubModule to set up and utilize SignalR hubs
 var hubModule = (function () {
     "use strict";
@@ -125,12 +122,12 @@ var hubModule = (function () {
         function makeApiFunction(name) {
             return function () {
                 var args = [].slice.call(arguments);
-                var promise = hub.server[name].apply(this, arguments);
+                var promise = hub.server[name].apply(this, args);
                 return hub.request(promise);
             };
         }
 
-        function makeQueueApiFunction(name, argumentNames) {
+        function makeQueueApiFunction(name) {
             return function () {
                 var args = [].slice.call(arguments);
                 var request = function () {
