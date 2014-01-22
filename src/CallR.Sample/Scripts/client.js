@@ -15,10 +15,6 @@ $(function () {
             '</span></li>');
     };
 
-    var displayNumber = function (number) {
-        console.log("number: " + number + " typeof(number): " + typeof number);
-    };
-
     var handleError = function (error) {
         console.log('Error: ' + error);
     };
@@ -77,7 +73,7 @@ $(function () {
         $("#publish").unbind('click').click(sendMsg);
 
         $("#msg").unbind('keypress').keypress(function (e) {
-            if (e.which == 13) {
+            if (e.which === 13) {
                 console.log(e);
                 sendMsg();
             }
