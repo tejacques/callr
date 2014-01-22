@@ -4,12 +4,38 @@
 var chatApp = angular.module('chatApp', []);
 chatApp.value('$', $);
 
-chatApp.factory('signalr', ['$',
-    function ($) {
+chatApp.factory('signalr', ['$', '$q',
+    function ($, $q) {
         if ($.connection.API && $.connection.API.api) {
             return $.connection.API;
         }
-        return hubModule.init("API");
+        var signalr = hubModule.init("API");
+
+        function autoApply(api) {
+            $.each(signalr[api], function (el) {
+                var fn = signalr[api][el];
+                signalr[api][el] = function () {
+                    var args = [].slice.call(arguments);
+                    var promise = fn.apply(null, args);
+                    var qpromise = $q.when(promise);
+
+                    qpromise.done = function (cb) {
+                        this.then(cb);
+                    };
+
+                    qpromise.fail = function (cb) {
+                        this.then(null, cb);
+                    };
+
+                    return qpromise;
+                };
+            });
+        }
+
+        autoApply("api");
+        autoApply("queueApi");
+
+        return signalr;
     }
 ]);
 
@@ -30,7 +56,7 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
             console.log("Sending Message");
             if (channel && name && message) {
                 signalr.api.send(channel, name, message).done(function () {
-                    $scope.$apply();
+                    //$scope.$apply();
                 });
             }
 
@@ -40,7 +66,7 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
         $scope.addMessage = function (message) {
             console.log("Adding Message");
             $scope.messages.push(message);
-            $scope.$apply();
+            //$scope.$apply();
         };
 
         $scope.sendTestMessage = function () {
@@ -72,7 +98,7 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
                     console.log("Joined Channel");
                     $scope.channels.push(channel);
                     $scope.displayChannel = channel;
-                    $scope.$apply();
+                    //$scope.$apply();
                 };
             })(channel));
 
@@ -86,7 +112,7 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
         $scope.leaveChannel = function (channel) {
             signalr.api.unsubscribe(channel).done(function () {
                 $scope.channels.splice($scope.channels.indexOf(channel), 1);
-                $scope.$apply();
+                //$scope.$apply();
             });
         };
 
