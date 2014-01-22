@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Scripts\callr-1.0.0.angular.min.js.map">
+      <DependentUpon>callr-1.0.0.angular.js</DependentUpon>
+    </None>
     <None Include="Scripts\callr-1.0.0.min.js.map">
       <DependentUpon>callr-1.0.0.js</DependentUpon>
     </None>
@@ -71,6 +74,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Scripts\callr-1.0.0.angular.js" />
+    <Content Include="Scripts\callr-1.0.0.angular.min.js">
+      <DependentUpon>callr-1.0.0.angular.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\callr-1.0.0.js" />
     <Content Include="Scripts\callr-1.0.0.min.js">
       <DependentUpon>callr-1.0.0.js</DependentUpon>
