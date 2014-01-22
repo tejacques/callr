@@ -101,17 +101,14 @@
   <ItemGroup>
     <Content Include="..\CallR\Scripts\callr-1.0.0.js">
       <Link>Scripts\callr-1.0.0.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\CallR\Scripts\callr-1.0.0.min.js">
       <Link>Scripts\callr-1.0.0.min.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="index.html" />
     <Content Include="packages.config" />
     <Content Include="..\CallR\Scripts\callr-1.0.0.min.js.map">
       <Link>Scripts\callr-1.0.0.min.js.map</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\angular-mocks.js" />
