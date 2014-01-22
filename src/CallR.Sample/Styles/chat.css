@@ -5,6 +5,11 @@
     height: 30px;
 }
 
+button.leave-channel {
+    width: 20px;
+    height: 20px;
+}
+
 .app-container {
     width: 600px;
     margin: 40px auto;
@@ -20,6 +25,12 @@
 
 .messages-container {
     margin-top: 40px;
+    height: 300px;
+    border: 1px solid;
+}
+
+.message-input {
+    width: 100%;
 }
 
 .input-label {
@@ -40,4 +51,31 @@
 .chat-from {
     width: 80px;
     color: blue;
+}
+
+.channel-header {
+    width: 100%;
+    height: 25px;
+    border: 1px solid;
+}
+
+.channel-row {
+    width: 100%;
+    height: 25px;
+    border: 1px solid;
+    display: inline-block;
+}
+
+.channel-cell {
+    display: inline-block;
+    min-width: 70px;
+}
+
+.channel {
+    display: inline-block;
+    min-width: 45px;
+}
+
+.select-channel {
+    background: green;
 }

@@ -78,7 +78,7 @@ var hubModule = (function () {
                     // All requests complete
                     hub.connection.log("Finished flushing request queue");
                     if (closeAfter) {
-                        hub.stop();
+                        hub.disconnect();
                     }
 
                     if (cb) {
@@ -122,7 +122,11 @@ var hubModule = (function () {
         function makeApiFunction(name) {
             return function () {
                 var args = [].slice.call(arguments);
-                var promise = hub.server[name].apply(this, args);
+                var request = function () {
+                    return hub.server[name].apply(this, args);
+                };
+
+                var promise = hub.queueRequest(request);
                 return hub.request(promise);
             };
         }
@@ -150,6 +154,8 @@ var hubModule = (function () {
                 hub.addAPICall(key);
             }
         }
+
+        hub.connect();
 
         return hub;
     };
