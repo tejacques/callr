@@ -20,11 +20,11 @@ chatApp.factory('signalr', ['$', '$q',
                     var qpromise = $q.when(promise);
 
                     qpromise.done = function (cb) {
-                        this.then(cb);
+                        return this.then(cb);
                     };
 
                     qpromise.fail = function (cb) {
-                        this.then(null, cb);
+                        return this.then(null, cb);
                     };
 
                     return qpromise;
