@@ -31,8 +31,8 @@
     factory('hubFactory', ['$q', '$rootScope',
         function ($q, $rootScope) {
             var resources = {
-                nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the callr.angular client JavaScript file.",
-                noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the callr.angular client JavaScript file.",
+                nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the CallR.Angular client JavaScript file.",
+                noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the CallR.Angular client JavaScript file.",
                 noCallR: "CallR was not found. Please ensure CallR is referenced before the CallR.Angular client JavaScript file."
             };
 
@@ -61,7 +61,7 @@
 
                     var hub = $.callR.init(hubName);
 
-                    function convertToQPromise(fn) {
+                    function convertToAngularPromise(fn) {
                         return (function () {
                             var args = [].slice.call(arguments);
                             var promise = fn.apply(null, args);
@@ -74,7 +74,7 @@
 
                     function autoApplySpecific(base, name) {
                         var fn = base[name];
-                        base[name] = convertToQPromise(fn);
+                        base[name] = convertToAngularPromise(fn);
                     }
 
                     function autoApplyAll(base) {

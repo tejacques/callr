@@ -30,8 +30,8 @@
 var hubModule = (function () {
     "use strict";
     var resources = {
-        nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the callr.angular client JavaScript file.",
-        noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the callr.angular client JavaScript file."
+        nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the CallR client JavaScript file.",
+        noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the CallR client JavaScript file."
     };
 
     var $ = window.jQuery;
@@ -49,7 +49,14 @@ var hubModule = (function () {
     // Initialize a new hub by name
     var init = function (hubName) {
 
-        var hub = $.connection[hubName] || $.hubConnection().createHubProxy(hubName);
+        var conn = $.connection.hub,
+            hub = $.connection[hubName];
+
+        if (!$.connection.hub.id) {
+            conn = $.hubConnection();
+            $.connection.hub = conn;
+            hub = conn.createHubProxy(hubName);
+        }
 
         if (hub.callR) {
             // Already initialized
@@ -61,12 +68,18 @@ var hubModule = (function () {
 
         hub.unbindEvent = hub.off;
 
+        // The context of conn.start must be the conn
+        // We're using a function wrapper here instead
+        // of .bind for better browser support.
         hub.connect = function (options, callback) {
-            return $.connection.hub.start(options, callback);
+            return conn.start(options, callback);
         };
 
+        // The context of conn.stop must be the conn
+        // We're using a function wrapper here instead
+        // of .bind for better browser support.
         hub.disconnect = function (async, notifyServer) {
-            return $.connection.hub.stop(async, notifyServer);
+            return conn.hub.stop(async, notifyServer);
         };
 
         var _requestQueue = [];
@@ -92,7 +105,7 @@ var hubModule = (function () {
             hub.connection.log("Flushing request queue");
 
             var closeAfter = false;
-            if ($.connection.hub.state === $.signalR.connectionState.disconnected) {
+            if (conn.state === $.signalR.connectionState.disconnected) {
                 closeAfter = true;
             }
 
@@ -116,11 +129,11 @@ var hubModule = (function () {
                     if (deferred) {
                         deferred.resolve(response);
                     }
-                    requestComplete();
                 }).fail(function (error) {
                     if (deferred) {
                         deferred.reject(error);
                     }
+                }).always(function () {
                     requestComplete();
                 });
             }
@@ -143,7 +156,7 @@ var hubModule = (function () {
         hub.rpc = {};
         hub.queue = { rpc: {} };
 
-        function makeRPCFunction(fn) {
+        function makeRPCFunction(fn, queue) {
             return function () {
                 var args = [].slice.call(arguments);
                 var request = function () {
@@ -151,24 +164,18 @@ var hubModule = (function () {
                 };
 
                 var promise = queueRequest(request);
+
+                if (queue) {
+                    return promise;
+                }
+
                 return _request(promise);
-            };
-        }
-
-        function makeQueueRPCFunction(fn) {
-            return function () {
-                var args = [].slice.call(arguments);
-                var request = function () {
-                    return fn.apply(this, args);
-                };
-
-                return queueRequest(request);
             };
         }
 
         function _addRPC (name, fn) {
             hub.rpc[name] = makeRPCFunction(fn);
-            hub.queue.rpc[name] = makeQueueRPCFunction(fn);
+            hub.queue.rpc[name] = makeRPCFunction(fn, true);
         }
 
         hub.addRPC = function (name, nameOnServer) {
