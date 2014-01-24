@@ -91,6 +91,15 @@
                         });
                     }
 
+                    var _addRPC = hub.addRPC;
+                    hub.addRPC = function (name, nameOnServer) {
+                        var args = [].slice.call(arguments);
+                        _addRPC.apply(this, args);
+                        autoApplySpecific(hub.rpc, name);
+                        autoApplySpecific(hub.queue.rpc, name);
+                        return this;
+                    }
+
                     autoApplyAll(hub.rpc);
                     autoApplyAll(hub.queue.rpc);
                     autoApplySpecific(hub, "connect");

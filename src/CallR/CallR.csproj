@@ -59,11 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Scripts\callr-1.0.0.angular.min.js.map">
-      <DependentUpon>callr-1.0.0.angular.js</DependentUpon>
+    <None Include="Scripts\callr.angular.min.js.map">
+      <DependentUpon>callr.angular.js</DependentUpon>
     </None>
-    <None Include="Scripts\callr-1.0.0.min.js.map">
-      <DependentUpon>callr-1.0.0.js</DependentUpon>
+    <None Include="Scripts\callr.min.js.map">
+      <DependentUpon>callr.js</DependentUpon>
     </None>
     <None Include="Scripts\jquery-1.10.2.min.js.map">
       <DependentUpon>jquery-1.10.2.js</DependentUpon>
@@ -74,13 +74,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Scripts\callr-1.0.0.angular.js" />
-    <Content Include="Scripts\callr-1.0.0.angular.min.js">
-      <DependentUpon>callr-1.0.0.angular.js</DependentUpon>
+    <Content Include="Scripts\callr.angular.js" />
+    <Content Include="Scripts\callr.angular.min.js">
+      <DependentUpon>callr.angular.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\callr-1.0.0.js" />
-    <Content Include="Scripts\callr-1.0.0.min.js">
-      <DependentUpon>callr-1.0.0.js</DependentUpon>
+    <Content Include="Scripts\callr.js" />
+    <Content Include="Scripts\callr.min.js">
+      <DependentUpon>callr.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

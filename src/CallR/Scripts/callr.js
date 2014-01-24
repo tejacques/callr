@@ -185,7 +185,7 @@ var hubModule = (function () {
                 if (argNames.length !== args.length) {
                     throw new Error(name + " expected " + argNames.length +
                         " arguments: " + argNames.join(", ") +
-                        " but only had " + args.length);
+                        " but had " + args.length);
                 }
                 return hub.invoke.apply(hub, $.merge([nameOnServer], args));
             }

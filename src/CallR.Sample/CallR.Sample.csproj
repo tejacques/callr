@@ -78,18 +78,27 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.js">
-      <Link>Scripts\callr-1.0.0.angular.js</Link>
+    <Content Include="..\CallR\Scripts\callr.angular.js">
+      <Link>Scripts\callr.angular.js</Link>
     </Content>
-    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.min.js">
-      <Link>Scripts\callr-1.0.0.angular.min.js</Link>
+    <Content Include="..\CallR\Scripts\callr.angular.min.js">
+      <Link>Scripts\callr.angular.min.js</Link>
+    </Content>
+    <Content Include="..\CallR\Scripts\callr.js">
+      <Link>Scripts\callr.js</Link>
+    </Content>
+    <Content Include="..\CallR\Scripts\callr.min.js">
+      <Link>Scripts\callr.min.js</Link>
     </Content>
     <Content Include="jQuery.html" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\angular.min.js.map" />
-    <Content Include="..\CallR\Scripts\callr-1.0.0.angular.min.js.map">
-      <Link>Scripts\callr-1.0.0.angular.min.js.map</Link>
+    <Content Include="..\CallR\Scripts\callr.angular.min.js.map">
+      <Link>Scripts\callr.angular.min.js.map</Link>
+    </Content>
+    <Content Include="..\CallR\Scripts\callr.min.js.map">
+      <Link>Scripts\callr.min.js.map</Link>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -99,16 +108,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\CallR\Scripts\callr-1.0.0.js">
-      <Link>Scripts\callr-1.0.0.js</Link>
-    </Content>
-    <Content Include="..\CallR\Scripts\callr-1.0.0.min.js">
-      <Link>Scripts\callr-1.0.0.min.js</Link>
-    </Content>
     <Content Include="index.html" />
-    <Content Include="packages.config" />
-    <Content Include="..\CallR\Scripts\callr-1.0.0.min.js.map">
-      <Link>Scripts\callr-1.0.0.min.js.map</Link>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\angular-mocks.js" />
