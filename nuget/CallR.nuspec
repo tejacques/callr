@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>CallR</id>
+    <version>1.0.0</version>
+    <title>CallR</title>
+    <authors>Tom Jacques</authors>
+    <owners>Tom Jacques</owners>
+    <licenseUrl>https://github.com/tejacques/callr/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/tejacques/callr</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+        Binaries for the CallR library.
+        Visit https://github.com/tejacques/callr for an overview and usage examples.
+    </description>
+    <summary>
+        An open source helper library for SignalR.
+    </summary>
+    <releaseNotes>
+        Notes:
+
+        Version 1.0.0:
+            - HubUtility methods and extension methods for interacting with SignalR hubs.
+            - SendToAll(this THub hub, string type, params object[] parameters)
+            - SendToAll(string type, params object[] parameters)
+            - SendToClients(dynamic clients, string eventType, params object[] parameters)
+            - SendToGroup(this THub hub, string groupName, string type, params object[] parameters)
+            - SendToGroup(string groupName, string type, params object[] parameters) 
+    </releaseNotes>
+    <dependencies>
+        <dependency id="Microsoft.AspNet.SignalR" />
+        <dependency id="CallR.JS" />
+    </dependencies>
+    <copyright>Copyright 2014</copyright>
+    <tags>SignalR</tags>
+  </metadata>
+  <files>
+    <file src="..\lib\nuget\CallR\*.*" target="lib\Net40" />
+  </files>
+</package>

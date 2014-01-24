@@ -22,6 +22,13 @@ namespace CallR
             = new ConcurrentDictionary<string, CallSite<Action<CallSite, object, object, object, object, object>>>();
         private static ConcurrentDictionary<string, CallSite<Action<CallSite, object, object, object, object, object, object>>> _callsiteDictionary5
             = new ConcurrentDictionary<string, CallSite<Action<CallSite, object, object, object, object, object, object>>>();
+
+        /// <summary>
+        /// Sends an event with the specified parameters to the given clients.
+        /// </summary>
+        /// <param name="clients">The clients to send to</param>
+        /// <param name="eventType">The type of event</param>
+        /// <param name="parameters">The event parameters</param>
         public static void SendToClients(dynamic clients, string eventType, params object[] parameters)
         {
             switch(parameters.Length)
