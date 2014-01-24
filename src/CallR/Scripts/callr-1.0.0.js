@@ -83,6 +83,9 @@ var hubModule = (function () {
 
             if (requestsRemaining === 0) {
                 hub.connection.log("No requests to flush");
+                if (typeof (cb) === 'function') {
+                    cb();
+                }
                 return;
             }
 
@@ -102,7 +105,7 @@ var hubModule = (function () {
                         hub.disconnect();
                     }
 
-                    if (cb) {
+                    if (typeof (cb) === 'function') {
                         cb();
                     }
                 }
