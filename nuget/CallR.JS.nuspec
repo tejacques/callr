@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CallR.JS</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>CallR.JS</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -36,6 +36,6 @@
     <tags>SignalR</tags>
   </metadata>
   <files>
-    <file src="..\lib\nuget\CallR.JS\*.*" target="Scripts" />
+    <file src="..\lib\nuget\CallR.JS\*.*" target="Content\Scripts" />
   </files>
 </package>
