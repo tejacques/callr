@@ -8,11 +8,7 @@
   "description": "A SignalR utility library",
   "main": [
       "lib/bower/jquery.signalR-2.0.1.js",
-      "lib/bower/jquery.signalR-2.0.1.min.js",
-      "lib/bower/jquery.signalR-2.0.1.min.js.map",
-      "lib/bower/callr.js",
-      "lib/bower/callr.min.js",
-      "lib/bower/callr.min.js.map"
+      "lib/bower/callr.js"
   ],
   "ignore": [
       "lib/nuget",
@@ -25,7 +21,7 @@
   ],
   "dependencies": {
       "jquery": ">=1.6.4"
-  }
+  },
   "keywords": [
     "SignalR"
   ],
