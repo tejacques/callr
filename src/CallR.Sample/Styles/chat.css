@@ -25,8 +25,12 @@ button.leave-channel {
 
 .messages-container {
     margin-top: 40px;
-    height: 300px;
     border: 1px solid;
+}
+
+.messages {
+    height: 300px;
+    overflow: auto;
 }
 
 .message-input {
@@ -38,18 +42,14 @@ button.leave-channel {
     width: 100px;
 }
 
-.chat-header {
-    width: 160px;
-    display: inline-block;
-}
-
 .chat-channel {
     width: 80px;
     color: red;
 }
 
 .chat-from {
-    width: 80px;
+    display: inline-block;
+    min-width: 80px;
     color: blue;
 }
 
@@ -78,4 +78,8 @@ button.leave-channel {
 
 .select-channel {
     background: green;
+}
+
+.hidden {
+    display: none;
 }

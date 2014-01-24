@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.0 AngularJS factory
+* callr JavaScript Library v1.0.0 AngularJS Module
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -26,60 +26,78 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-function hubModuleFactory($provide) {
-    $provide.factory('signalr', ['$', '$q', '$rootScope',
-        function ($, $q, $rootScope) {
+(function () {
+    angular.module('hubModule', []).
+    factory('hubFactory', ['$q', '$rootScope',
+        function ($q, $rootScope) {
+            var resources = {
+                nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the callr.angular client JavaScript file.",
+                noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the callr.angular client JavaScript file.",
+                noCallR: "CallR was not found. Please ensure CallR is referenced before the CallR.Angular client JavaScript file."
+            };
+
+            var $ = window.jQuery;
+
+            if (typeof ($) !== "function") {
+                // no jQuery!
+                throw new Error(resources.nojQuery);
+            }
+
+            if (typeof ($.signalR) !== "function") {
+                // no SignalR!
+                throw new Error(resources.noSignalR);
+            }
+
+            if (typeof ($.callR) === 'undefined') {
+                // no CallR!
+                throw new Error(resources.noCallR);
+            }
+
             return {
-                init: function (hubName) {
-                    if ($.connection[hubName] && $.connection[hubName].api) {
+                create: function (hubName) {
+                    if ($.connection[hubName] && $.connection[hubName].rpc) {
                         return $.connection[hubName];
                     }
 
-                    var hub = hubModule.init(hubName);
+                    var hub = $.callR.init(hubName);
 
-                    function autoApplyAPI(api) {
-                        $.each(hub[api], function (el) {
-                            var fn = hub[api][el];
-                            hub[api][el] = function () {
-                                var args = $.makeArray(arguments);
-                                var promise = fn.apply(null, args);
-
-                                // Convert to $q promise from jQuery promise
-                                var qpromise = $q.when(promise);
-                                return qpromise;
-                            };
-                        });
-                    }
-
-                    function autoApplyFn(fname) {
-                        var fn = hub[fname];
-                        hub[fname] = function () {
-
-                            var args = $.makeArray(arguments);
-                            var promise = fn.apply(this, args);
+                    function convertToQPromise(fn) {
+                        return (function () {
+                            var args = [].slice.call(arguments);
+                            var promise = fn.apply(null, args);
 
                             // Convert to $q promise from jQuery promise
                             var qpromise = $q.when(promise);
                             return qpromise;
-                        };
+                        });
                     }
 
-                    
+                    function autoApplySpecific(base, name) {
+                        var fn = base[name];
+                        base[name] = convertToQPromise(fn);
+                    }
+
+                    function autoApplyAll(base) {
+                        $.each(base, function (name) {
+                            autoApplySpecific(base, name);
+                        });
+                    }
+
                     hub.bindEvent = function (eventName, callback) {
                         hub.on(eventName, function () {
-                            var args = $.makeArray(arguments);
+                            var args = [].slice.call(arguments);
                             callback.apply(this, args);
                             $rootScope.$apply();
                         });
                     }
 
-                    autoApplyAPI("api");
-                    autoApplyAPI("queueApi");
-                    autoApplyFn("connect");
+                    autoApplyAll(hub.rpc);
+                    autoApplyAll(hub.queue.rpc);
+                    autoApplySpecific(hub, "connect");
 
                     return hub;
                 }
             }
         }
     ]);
-}
+})();

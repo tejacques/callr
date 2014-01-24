@@ -29,13 +29,34 @@
 // Create hubModule to set up and utilize SignalR hubs
 var hubModule = (function () {
     "use strict";
+    var resources = {
+        nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the callr.angular client JavaScript file.",
+        noSignalR: "SignalR was not found. Please ensure SignalR is referenced before the callr.angular client JavaScript file."
+    };
+
+    var $ = window.jQuery;
+
+    if (typeof ($) !== "function") {
+        // no jQuery!
+        throw new Error(resources.nojQuery);
+    }
+
+    if (typeof ($.signalR) !== "function") {
+        // no SignalR!
+        throw new Error(resources.noSignalR);
+    }
 
     // Initialize a new hub by name
     var init = function (hubName) {
 
-        var hub = $.connection[hubName];
-        hub.subscriptions = {};
-        
+        var hub = $.connection[hubName] || $.hubConnection().createHubProxy(hubName);
+
+        if (hub.callR) {
+            // Already initialized
+            return hub;
+        }
+
+        hub.callR = true;
         hub.bindEvent = hub.on;
 
         hub.unbindEvent = hub.off;
@@ -116,14 +137,14 @@ var hubModule = (function () {
             return promise;
         }
 
-        hub.api = hub.api || {};
-        hub.queueApi = hub.queueApi || {};
+        hub.rpc = {};
+        hub.queue = { rpc: {} };
 
-        function makeApiFunction(name) {
+        function makeRPCFunction(fn) {
             return function () {
                 var args = [].slice.call(arguments);
                 var request = function () {
-                    return hub.server[name].apply(this, args);
+                    return fn.apply(this, args);
                 };
 
                 var promise = queueRequest(request);
@@ -131,35 +152,51 @@ var hubModule = (function () {
             };
         }
 
-        function makeQueueApiFunction(name) {
+        function makeQueueRPCFunction(fn) {
             return function () {
                 var args = [].slice.call(arguments);
                 var request = function () {
-                    return hub.server[name].apply(this, args);
+                    return fn.apply(this, args);
                 };
 
                 return queueRequest(request);
             };
         }
 
-        hub.addAPICall = function (name) {
-            if (hub.server[name]) {
-                hub.api[name] = makeApiFunction(name);
-                hub.queueApi[name] = makeQueueApiFunction(name);
+        function _addRPC (name, fn) {
+            hub.rpc[name] = makeRPCFunction(fn);
+            hub.queue.rpc[name] = makeQueueRPCFunction(fn);
+        }
+
+        hub.addRPC = function (name, nameOnServer) {
+            var argNames = [].slice.call(arguments).slice(2);
+            function rpcCall() {
+                var args = [].slice.call(arguments);
+                if (argNames.length !== args.length) {
+                    throw new Error(name + " expected " + argNames.length +
+                        " arguments: " + argNames.join(", ") +
+                        " but only had " + args.length);
+                }
+                return hub.invoke.apply(hub, $.merge([nameOnServer], args));
             }
+
+            _addRPC(name, rpcCall);
+
+            return this;
         };
 
         for (var key in hub.server) {
             if (hub.server.hasOwnProperty(key)) {
-                hub.addAPICall(key);
+                _addRPC(key, hub.server[key]);
             }
         }
 
-        hub.connect();
-
         return hub;
     };
-    return {
-        init: init
+
+    $.callR = {
+        "init": init
     };
+
+    return $.callR;
 })();

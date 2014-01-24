@@ -1,12 +1,10 @@
 ﻿/// <reference path="jquery-1.10.2.js" />
 /// <reference path="callr-1.0.0.js" />
 /// <reference path="angular.js" />
-var chatApp = angular.module('chatApp', []);
-chatApp.value('$', $);
-hubModuleFactory(chatApp);
+var chatApp = angular.module('chatApp', ['hubModule']);
 
-chatApp.controller('ChatController', ['$', '$scope', 'signalr',
-    function ($, $scope, signalr) {
+chatApp.controller('ChatController', ['$scope', 'hubFactory',
+    function ($scope, hubFactory) {
         $scope.messages = [];
         $scope.channels = [];
 
@@ -14,14 +12,15 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
         $scope.message = null;
         $scope.channel = null;
 
-        $scope.displayChannel = null;
+        $scope.display = { "channel": null };
 
-        var hub = signalr.init("API");
+        var hub = hubFactory.create("API");
         hub.connection.logging = true;
+        hub.connect();
 
         $scope.sendMessage = function (channel, name, message) {
             if (channel && name && message) {
-                hub.api.send(channel, name, message);
+                hub.rpc.send(channel, name, message);
             }
 
             $scope.message = null;
@@ -32,19 +31,21 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
         };
 
         $scope.sendTestMessage = function () {
-            hub.api.sendTest();
+            hub.rpc.sendTest();
         };
 
         $scope.queueSendTestMessage = function () {
-            hub.queueApi.sendTest();
+            hub.queue.rpc.sendTest();
         };
 
         $scope.getTestMessage = function () {
-            hub.api.getTest().then($scope.addMessage);
+            hub.rpc.getTest().then($scope.addMessage, function (error) {
+                console.log(error);
+            });
         };
 
         $scope.queueGetTestMessage = function () {
-            hub.queueApi.getTest().then($scope.addMessage);
+            hub.queue.rpc.getTest().then($scope.addMessage);
         };
 
         $scope.flushRequests = hub.flushRequests;
@@ -54,10 +55,10 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
                 return;
             }
 
-            hub.api.subscribe(channel).then((function (channel) {
+            hub.rpc.subscribe(channel).then((function (channel) {
                 return function () {
                     $scope.channels.push(channel);
-                    $scope.displayChannel = channel;
+                    $scope.display.channel = channel;
                 };
             })(channel));
 
@@ -65,12 +66,15 @@ chatApp.controller('ChatController', ['$', '$scope', 'signalr',
         };
 
         $scope.setChannel = function (channel) {
-            $scope.displayChannel = channel;
+            $scope.display.channel = channel;
         };
 
         $scope.leaveChannel = function (channel) {
-            hub.api.unsubscribe(channel).then(function () {
+            hub.rpc.unsubscribe(channel).then(function () {
                 $scope.channels.splice($scope.channels.indexOf(channel), 1);
+                if ($scope.display.channel === channel) {
+                    $scope.display.channel = null;
+                }
             });
         };
 
