@@ -8,7 +8,8 @@
   "description": "A SignalR utility library",
   "main": [
       "lib/bower/jquery.signalR-2.0.1.js",
-      "lib/bower/callr.js"
+      "lib/bower/callr.js",
+      "lib/bower/callr.angular.js"
   ],
   "ignore": [
       "lib/nuget",
