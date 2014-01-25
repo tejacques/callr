@@ -16,7 +16,6 @@
       "nuget",
       "src",
       "bower.json",
-      ".bower.json",
       "copylibs.sh",
       ".gitattributes",
       ".gitignore",
