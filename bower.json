@@ -1,6 +1,6 @@
 {
   "name": "callr",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "homepage": "https://github.com/tejacques/callr",
   "authors": [
     "Tom Jacques <tejacques@gmail.com>"
@@ -13,8 +13,11 @@
   ],
   "ignore": [
       "lib/nuget",
+      "nuget",
       "src",
       "bower.json",
+      ".bower.json",
+      "copylibs.sh",
       ".gitattributes",
       ".gitignore",
       "LICENSE",
