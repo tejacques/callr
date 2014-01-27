@@ -7,6 +7,9 @@ using System.Collections.Concurrent;
 
 namespace CallR
 {
+    /// <summary>
+    /// Utility functions for interacting with Hubs in SignalR
+    /// </summary>
     public static class HubUtility
     {
         /// <summary>
@@ -68,6 +71,13 @@ namespace CallR
             SendToClients(clients, eventType, parameters);
         }
 
+        /// <summary>
+        /// Sends an event with the specified parameters
+        /// to everyone in the specified hub.
+        /// </summary>
+        /// <typeparam name="THub">The hub type</typeparam>
+        /// <param name="eventType">The event type</param>
+        /// <param name="parameters">The event parameters</param>
         public static void SendToAll<THub>(string eventType, params object[] parameters)
             where THub : IHub
         {
