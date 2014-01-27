@@ -10,7 +10,7 @@ cp src/CallR/Scripts/callr.angular.min.js.map lib/nuget/CallR.Angular/
 
 cp src/CallR/bin/Release/CallR.dll lib/nuget/CallR/
 cp src/CallR/bin/Release/CallR.pdb lib/nuget/CallR/
-#cp src/CallR/bin/Release/CallR.xml lib/nuget/CallR/
+cp src/CallR/bin/Release/CallR.xml lib/nuget/CallR/
 
 
 cp src/CallR/Scripts/jquery.signalR-2.0.1.js lib/bower/
