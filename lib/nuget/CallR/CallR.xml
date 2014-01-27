@@ -4,6 +4,11 @@
         <name>CallR</name>
     </assembly>
     <members>
+        <member name="T:CallR.HubUtility">
+            <summary>
+            Utility functions for interacting with Hubs in SignalR
+            </summary>
+        </member>
         <member name="M:CallR.HubUtility.SendToClients(System.Object,System.String,System.Object[])">
             <summary>
             Sends an event with the specified parameters to the given clients.
@@ -40,6 +45,15 @@
             </summary>
             <typeparam name="THub">The hub type</typeparam>
             <param name="groupName">The group name</param>
+            <param name="eventType">The event type</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="M:CallR.HubUtility.SendToAll``1(System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters
+            to everyone in the specified hub.
+            </summary>
+            <typeparam name="THub">The hub type</typeparam>
             <param name="eventType">The event type</param>
             <param name="parameters">The event parameters</param>
         </member>
