@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.0
+* callr JavaScript Library v1.0.1
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -27,6 +27,7 @@
 */
 
 // Create hubModule to set up and utilize SignalR hubs
+/* exported hubModule */
 var hubModule = (function () {
     "use strict";
     var resources = {

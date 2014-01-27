@@ -17,38 +17,63 @@ namespace CallR
         /// <param name="parameters">The event parameters</param>
         public static void SendToClients(dynamic clients, string eventType, params object[] parameters)
         {
-            var signalProxy = (SignalProxy)clients;
+            var signalProxy = (IClientProxy)clients;
             signalProxy.Invoke(eventType, parameters);
         }
 
-        public static void SendToGroup<THub>(this THub hub, string groupName, string type, params object[] parameters)
+        /// <summary>
+        /// Sends an event with the specified parameters
+        /// to the given group in the specified hub.
+        /// </summary>
+        /// <typeparam name="THub">The hub type</typeparam>
+        /// <param name="hub">The hub</param>
+        /// <param name="groupName">The group name</param>
+        /// <param name="eventType">The event type</param>
+        /// <param name="parameters">The event parameters</param>
+        public static void SendToGroup<THub>(this THub hub, string groupName, string eventType, params object[] parameters)
             where THub : IHub
         {
             var clients = hub.Clients.Group(groupName);
-            SendToClients(clients, type, parameters);
+            SendToClients(clients, eventType, parameters);
         }
 
-        public static void SendToAll<THub>(this THub hub, string type, params object[] parameters)
+        /// <summary>
+        /// Sends an event with the specified parameters
+        /// to everyone in the specified hub.
+        /// </summary>
+        /// <typeparam name="THub">The hub type</typeparam>
+        /// <param name="hub">The hub</param>
+        /// <param name="eventType">The event type</param>
+        /// <param name="parameters">The event parameters</param>
+        public static void SendToAll<THub>(this THub hub, string eventType, params object[] parameters)
             where THub : IHub
         {
             var clients = hub.Clients.All;
-            SendToClients(clients, type, parameters);
+            SendToClients(clients, eventType, parameters);
         }
 
-        public static void SendToGroup<THub>(string groupName, string type, params object[] parameters)
+        /// <summary>
+        /// Sends an event with the specified parameters
+        /// to the given group in the specified hub.
+        /// </summary>
+        /// <typeparam name="THub">The hub type</typeparam>
+        /// <param name="groupName">The group name</param>
+        /// <param name="eventType">The event type</param>
+        /// <param name="parameters">The event parameters</param>
+        public static void SendToGroup<THub>(string groupName, string eventType, params object[] parameters)
             where THub : IHub
         {
             var hub = GlobalHost.ConnectionManager.GetHubContext<THub>();
             var clients = hub.Clients.Group(groupName);
-            SendToClients(clients, type, parameters);
+            SendToClients(clients, eventType, parameters);
         }
 
-        public static void SendToAll<THub>(string type, params object[] parameters)
+        public static void SendToAll<THub>(string eventType, params object[] parameters)
             where THub : IHub
         {
             var hub = GlobalHost.ConnectionManager.GetHubContext<THub>();
             var clients = hub.Clients.All;
-            SendToClients(clients, type, parameters);
+            SendToClients(clients, eventType, parameters);
         }
 
     }

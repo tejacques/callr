@@ -1,5 +1,6 @@
 ﻿/// <reference path="jquery-1.10.2.js" />
 /// <reference path="callr-1.0.0.js" />
+/* global hubModule */
 $(function () {
     var hub = hubModule.init("API");
     hub.addRPC("getTest", "GetTest")
