@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.2 AngularJS Module
+* callr JavaScript Library v1.0.3 AngularJS Module
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -83,13 +83,31 @@
                         });
                     }
 
-                    hub.bindEvent = function (eventName, callback) {
-                        hub.on(eventName, function () {
+                    var _eventCallbacks = {};
+                    hub.bindEvent = function (eventName, callback, scope) {
+                        var cb = function () {
                             var args = [].slice.call(arguments);
                             callback.apply(this, args);
-                            $rootScope.$apply();
-                        });
-                    }
+
+                            // If a specific scope was supplied, use it.
+                            if (typeof (scope) !== 'undefined') {
+                                scope.$digest();
+                            } else {
+                                $rootScope.$apply();
+                            }
+                        };
+                        _eventCallbacks[callback] = cb;
+
+                        hub.on(eventName, cb);
+                    };
+
+                    // Refer to the mapped callback
+                    hub.unbindEvent = function (eventName, callback) {
+                        if (_eventCallbacks[callback]) {
+                            hub.off(eventName, _eventCallbacks[callback]);
+                            delete _eventCallbacks[callback];
+                        }
+                    };
 
                     var _addRPC = hub.addRPC;
                     hub.addRPC = function (name, nameOnServer) {

@@ -89,7 +89,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         $scope.connect = hub.connect;
         $scope.disconnect = hub.disconnect;
 
-        hub.bindEvent("message", $scope.addMessage);
+        hub.bindEvent("message", $scope.addMessage, $scope);
 
         $scope.connect().then(function() {
             $scope.joinChannel("TestChannel");
