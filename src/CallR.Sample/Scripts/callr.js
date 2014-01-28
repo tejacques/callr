@@ -57,6 +57,7 @@ var hubModule = (function () {
             conn = $.hubConnection();
             $.connection.hub = conn;
             hub = conn.createHubProxy(hubName);
+            $.connection[hubName] = hub;
         }
 
         if (hub.callR) {
