@@ -62,10 +62,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Scripts\callr.angular.min.js.map">
-      <DependentUpon>callr.angular.js</DependentUpon>
+      <DependentUpon>callr.angular.min.js</DependentUpon>
     </None>
     <None Include="Scripts\callr.min.js.map">
-      <DependentUpon>callr.js</DependentUpon>
+      <DependentUpon>callr.min.js</DependentUpon>
     </None>
     <None Include="Scripts\jquery-1.10.2.min.js.map">
       <DependentUpon>jquery-1.10.2.js</DependentUpon>

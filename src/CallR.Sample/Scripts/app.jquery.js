@@ -148,8 +148,7 @@ $(function () {
             if (oldName.length === 0 && myName.length > 0) {
                 // Make it visible
                 $(".chat-container").removeClass("hidden");
-            }
-            else if (oldName.length > 0 && myName.length === 0) {
+            } else if (oldName.length > 0 && myName.length === 0) {
                 // Make it invisible
                 $(".chat-container").addClass("hidden");
             }

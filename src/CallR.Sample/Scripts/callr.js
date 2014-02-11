@@ -56,6 +56,9 @@ var hubModule = (function () {
         if (typeof (conn.state) === 'undefined') {
             conn = $.hubConnection();
             $.connection.hub = conn;
+        }
+
+        if (typeof (hub) === 'undefined') {
             hub = conn.createHubProxy(hubName);
             $.connection[hubName] = hub;
         }
