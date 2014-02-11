@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.4
+* callr JavaScript Library v1.0.5
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -190,14 +190,16 @@ var hubModule = (function () {
         }
 
         hub.addRPC = function (name, nameOnServer) {
-            var argNames = [].slice.call(arguments).slice(2);
+            if (typeof (name) === 'undefined') {
+                throw new Error("addRPC requires a name");
+            }
+
+            if (typeof (nameOnServer) === 'undefined') {
+                nameOnServer = name.charAt(0).toUpperCase() + name.slice(1);
+            }
+
             function rpcCall() {
                 var args = [].slice.call(arguments);
-                if (argNames.length !== args.length) {
-                    throw new Error(name + " expected " + argNames.length +
-                        " arguments: " + argNames.join(", ") +
-                        " but had " + args.length);
-                }
                 return hub.invoke.apply(hub, $.merge([nameOnServer], args));
             }
 
