@@ -17,11 +17,11 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         var hub = hubFactory.create("API");
 
         // Explicitely set server functions
-        hub.addRPC("getTest", "GetTest")
-           .addRPC("send", "Send", "channel", "name", "message")
-           .addRPC("sendTest", "SendTest")
-           .addRPC("subscribe", "Subscribe", "channel")
-           .addRPC("unsubscribe", "Unsubscribe", "channel");
+        hub.addRPC("getTest")
+           .addRPC("send")
+           .addRPC("sendTest")
+           .addRPC("subscribe")
+           .addRPC("unsubscribe");
 
         hub.connection.logging = true;
         hub.connect();

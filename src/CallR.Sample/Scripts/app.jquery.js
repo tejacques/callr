@@ -3,11 +3,11 @@
 /* global hubModule */
 $(function () {
     var hub = hubModule.init("API");
-    hub.addRPC("getTest", "GetTest")
-       .addRPC("send", "Send", "channel", "name", "message")
-       .addRPC("sendTest", "SendTest")
-       .addRPC("subscribe", "Subscribe", "channel")
-       .addRPC("unsubscribe", "Unsubscribe", "channel");
+    hub.addRPC("getTest")
+       .addRPC("send")
+       .addRPC("sendTest")
+       .addRPC("subscribe")
+       .addRPC("unsubscribe");
 
     var messages = [],
         channels = [],
