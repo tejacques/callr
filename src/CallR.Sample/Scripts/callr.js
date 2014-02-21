@@ -164,7 +164,8 @@ var hubModule = (function () {
             return promise;
         }
 
-        hub.rpc = {};
+        hub.rpc = function () {
+        };
         hub.queue = { rpc: {} };
 
         function makeRPCFunction(fn, queue) {
