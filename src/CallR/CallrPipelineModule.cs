@@ -8,36 +8,64 @@ using System.Threading.Tasks;
 
 namespace CallR
 {
-    public class CallrPipelineModule : HubPipelineModule
+    public class CallRPipelineModule : HubPipelineModule
     {
         public override Func<IHubIncomingInvokerContext, Task<object>> 
             BuildIncoming(
                 Func<IHubIncomingInvokerContext, Task<object>> invoke)
         {
-            return context =>
+            return async context =>
             {
                 if (OnBeforeIncoming(context))
                 {
-                    if (typeof(CallrHub)
+                    if (typeof(CallRHub)
                         .IsAssignableFrom(
                         context.MethodDescriptor.Hub.HubType))
                     {
-                        var cache = context
+                        var hub = (CallRHub)context.Hub;
+
+                        var expectedNum = context
                             .MethodDescriptor
-                            .Attributes
-                            .Where(attr => attr.GetType() == typeof(object/*HubCacheAttribute*/))
-                            .FirstOrDefault() as object;
+                            .Parameters
+                            .Where(descriptor =>
+                                descriptor.ParameterType == typeof(object))
+                            .Count();
+
+                        var actual = context
+                            .Args
+                            .Where(o => o.GetType() == typeof(object));
+
+                        var actualNum = actual.Count();
+
+                        if (actualNum > 0)
+                        {
+                            hub.Fields = actual.Last();
+                        }
+
+                        if (actualNum > expectedNum)
+                        {
+                            var toRemove = actual.Skip(expectedNum);
+                            foreach (var rem in toRemove)
+                            {
+                                context.Args.Remove(rem);
+                            }
+                        }
+
+                        var res = await base.BuildIncoming(invoke)(context);
+
+                        if (actualNum > 0)
+                        {
+                            return res;
+                            // return FilterJson.Create(res, hub.Fields);
+                        }
+
+                        return res;
                     }
-                    return base.BuildIncoming(invoke)(context);
+
+                    return await base.BuildIncoming(invoke)(context);
                 }
-
-                return Task.FromResult<object>(null);
+                return null;
             };
-        }
-
-        protected override bool OnBeforeIncoming(IHubIncomingInvokerContext context)
-        {
-            return base.OnBeforeIncoming(context);
         }
     }
 }
