@@ -47,6 +47,10 @@ var hubModule = (function () {
         throw new Error(resources.noSignalR);
     }
 
+    function firstToUpper(string) {
+        string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     // Initialize a new hub by name
     var init = function (hubName) {
 
@@ -164,9 +168,18 @@ var hubModule = (function () {
             return promise;
         }
 
-        hub.rpc = function () {
+        hub.rpc = function (args) {
+            if (!args.name) {
+                throw Error("No function name provided.");
+            }
+            if (!args.nameOnServer) {
+                args.nameOnServer = firstToUpper(args.name);
+            }
         };
-        hub.queue = { rpc: {} };
+
+        hub.queue = {
+            rpc: makeRPCFunction(hub.rpc, true)
+        };
 
         function makeRPCFunction(fn, queue) {
             return function () {
@@ -196,7 +209,7 @@ var hubModule = (function () {
             }
 
             if (typeof (nameOnServer) === 'undefined') {
-                nameOnServer = name.charAt(0).toUpperCase() + name.slice(1);
+                nameOnServer = firstToUpper(name);
             }
 
             function rpcCall() {
