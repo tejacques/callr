@@ -9,7 +9,7 @@ using System.Web;
 namespace CallR.Sample.Hubs
 {
     [HubName("API")]
-    public class APIHub : Hub
+    public class APIHub : CallRHub
     {
         public void Send(string channel, string name, string message)
         {

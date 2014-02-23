@@ -24,16 +24,17 @@ namespace CallR
                     {
                         var hub = (CallRHub)context.Hub;
 
+                        var customType = typeof(string[]);
                         var expectedNum = context
                             .MethodDescriptor
                             .Parameters
                             .Where(descriptor =>
-                                descriptor.ParameterType == typeof(object))
+                                descriptor.ParameterType == customType)
                             .Count();
 
                         var actual = context
                             .Args
-                            .Where(o => o.GetType() == typeof(object));
+                            .Where(o => o.GetType() == customType);
 
                         var actualNum = actual.Count();
 
@@ -44,10 +45,17 @@ namespace CallR
 
                         if (actualNum > expectedNum)
                         {
-                            var toRemove = actual.Skip(expectedNum);
-                            foreach (var rem in toRemove)
+                            var toRemove = actual.Skip(expectedNum).ToArray();
+                            try
                             {
-                                context.Args.Remove(rem);
+                                foreach (var rem in toRemove)
+                                {
+                                    context.Args.Remove(rem);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
                             }
                         }
 
