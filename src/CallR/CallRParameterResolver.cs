@@ -35,7 +35,7 @@ namespace CallR
             var parameters = method.Parameters.ToList();
             parameters.Add(new ParameterDescriptor
             {
-                ParameterType = typeof(string[])
+                ParameterType = typeof(CallRParams)
             });
 
             return parameters.Zip(values, ResolveParameter).ToList();

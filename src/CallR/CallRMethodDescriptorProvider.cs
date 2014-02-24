@@ -2,20 +2,32 @@
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CallR
 {
+    /// <summary>
+    /// An implementation of IMethodDescriptorProvider which uses a
+    /// ReflectedMethodDescriptorProvider under the hood, retrying
+    /// failed lookups without the last parameter, which may be optional
+    /// CallRParameters in CallR.
+    /// </summary>
     public class CallRMethodDescriptorProvider : IMethodDescriptorProvider
     {
         private readonly ReflectedMethodDescriptorProvider _provider;
+        private readonly ConcurrentDictionary<string, MethodDescriptor>
+            _executableMethods;
 
         public CallRMethodDescriptorProvider()
         {
             _provider = new ReflectedMethodDescriptorProvider();
+            _executableMethods = 
+                new ConcurrentDictionary<string, MethodDescriptor>();
         }
 
         public IEnumerable<MethodDescriptor> GetMethods(HubDescriptor hub)
@@ -23,19 +35,64 @@ namespace CallR
             return _provider.GetMethods(hub);
         }
 
-        public bool TryGetMethod(HubDescriptor hub, string method, out MethodDescriptor descriptor, IList<IJsonValue> parameters)
+        public bool TryGetMethod(
+            HubDescriptor hub,
+            string method, 
+            out MethodDescriptor descriptor,
+            IList<IJsonValue> parameters)
         {
-            if (!_provider
-                .TryGetMethod(hub, method, out descriptor, parameters))
-            {
-                var paramsWithoutLast = parameters.ToList();
-                paramsWithoutLast.RemoveAt(paramsWithoutLast.Count - 1);
+            var hubMethodKey = BuildHubExecutableMethodCacheKey(
+                hub, method, parameters);
 
-                _provider.TryGetMethod(
-                    hub, method, out descriptor, paramsWithoutLast);
+            if (!_executableMethods.TryGetValue(hubMethodKey, out descriptor))
+            {
+                if (!_provider
+                    .TryGetMethod(hub, method, out descriptor, parameters))
+                {
+                    var paramsWithoutLast = parameters.ToList();
+                    paramsWithoutLast.RemoveAt(paramsWithoutLast.Count - 1);
+
+                    _provider.TryGetMethod(
+                        hub, method, out descriptor, paramsWithoutLast);
+                }
+
+                // If an executable method was found, cache it for future
+                // lookups (NOTE: we don't cache null instances because it
+                // could be a surface area for DoS attack by supplying random
+                // method names to flood the cache)
+                if (descriptor != null)
+                {
+                    _executableMethods.TryAdd(hubMethodKey, descriptor);
+                }
             }
 
             return descriptor != null;
+        }
+
+        private static string BuildHubExecutableMethodCacheKey(
+            HubDescriptor hub,
+            string method,
+            IList<IJsonValue> parameters)
+        {
+            string normalizedParameterCountKeyPart;
+
+            if (parameters != null)
+            {
+                normalizedParameterCountKeyPart = parameters.Count.ToString(
+                    CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                // NOTE: we normalize a null parameter array to be the same as an empty (i.e. Length == 0) parameter array
+                normalizedParameterCountKeyPart = "0";
+            }
+
+            // NOTE: we always normalize to all uppercase since method names are case insensitive and could theoretically come in diff. variations per call
+            string normalizedMethodName = method.ToUpperInvariant();
+
+            string methodKey = hub.Name + "::" + normalizedMethodName + "(" + normalizedParameterCountKeyPart + ")";
+
+            return methodKey;
         }
     }
 }

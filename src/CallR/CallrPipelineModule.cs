@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using Polarize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace CallR
                     {
                         var hub = (CallRHub)context.Hub;
 
-                        var customType = typeof(string[]);
+                        var customType = typeof(CallRParams);
                         var expectedNum = context
                             .MethodDescriptor
                             .Parameters
@@ -40,31 +41,25 @@ namespace CallR
 
                         if (actualNum > 0)
                         {
-                            hub.Fields = actual.Last();
+                            hub.Parameters = actual.Last() as CallRParams;
                         }
 
                         if (actualNum > expectedNum)
                         {
                             var toRemove = actual.Skip(expectedNum).ToArray();
-                            try
+
+                            foreach (var rem in toRemove)
                             {
-                                foreach (var rem in toRemove)
-                                {
-                                    context.Args.Remove(rem);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
+                                context.Args.Remove(rem);
                             }
                         }
 
                         var res = await base.BuildIncoming(invoke)(context);
 
-                        if (actualNum > 0)
+                        if (actualNum > expectedNum)
                         {
-                            return res;
-                            // return FilterJson.Create(res, hub.Fields);
+                            return JsonFilter.Create(
+                                res, hub.Parameters.Fields);
                         }
 
                         return res;

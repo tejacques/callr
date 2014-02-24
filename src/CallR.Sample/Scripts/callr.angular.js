@@ -118,6 +118,8 @@
                         return this;
                     }
 
+                    hub._myRPC = convertToAngularPromise(hub._myRPC);
+                    hub._myQueueRPC = convertToAngularPromise(hub._myQueueRPC);
                     autoApplyAll(hub.rpc);
                     autoApplyAll(hub.queue.rpc);
                     autoApplySpecific(hub, "connect");

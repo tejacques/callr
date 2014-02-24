@@ -9,7 +9,7 @@ namespace CallR
 {
     public class CallRHub : Hub
     {
-        public object Fields { get; set; }
+        public CallRParams Parameters { get; set; }
 
         // Must DI IParameterResolver
         // 1) Pass in an additional parameter in javascript to

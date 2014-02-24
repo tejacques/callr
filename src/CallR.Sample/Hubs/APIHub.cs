@@ -11,6 +11,12 @@ namespace CallR.Sample.Hubs
     [HubName("API")]
     public class APIHub : CallRHub
     {
+        public override Task OnConnected()
+        {
+            Clients.Caller.User = "TestUser";
+            Clients.Caller.connected();
+            return base.OnConnected();
+        }
         public void Send(string channel, string name, string message)
         {
             // Call the sendMessage method to update clients.
@@ -24,12 +30,30 @@ namespace CallR.Sample.Hubs
                 });
         }
 
+        [HubCache(
+            CacheMethod:CacheMethod.Arguments|CacheMethod.StateKey,
+            StateKey:"User",
+            Minutes:5)]
         public object GetTest()
         {
             return new {
                 channel = "TestChannel",
                 name = "TestName",
                 message = "TestMessage"
+            };
+        }
+
+        [HubCache(
+            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            StateKey: "User",
+            Minutes: 5)]
+        public object GetTest(string channel, string name, string message)
+        {
+            return new
+            {
+                channel = channel,
+                name = name,
+                message = message
             };
         }
 

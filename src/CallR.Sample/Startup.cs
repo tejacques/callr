@@ -22,6 +22,8 @@ namespace CallR.Sample
                 () => lazyMethodDescriptorProvider.Value);
 
             GlobalHost.HubPipeline.AddModule(new CallRPipelineModule());
+            GlobalHost.HubPipeline.AddModule(new CachingPipelineModule());
+            
             app.MapSignalR();
         }
     }
