@@ -8,9 +8,24 @@ using System.Threading.Tasks;
 
 namespace CallR
 {
+    /// <summary>
+    /// The SignalR ParameterResolver for CallR
+    /// </summary>
     public class CallRParameterResolver : DefaultParameterResolver
     {
-        public override IList<object> ResolveMethodParameters(MethodDescriptor method,
+        /// <summary>
+        /// Overridden ResolveMethodParameters which adds the optional
+        /// parameters to the HubMethod call if they do not exist.
+        /// </summary>
+        /// <param name="method">
+        /// The method descriptor of the hub method being invoked.
+        /// </param>
+        /// <param name="values">The values that were passed.</param>
+        /// <returns>
+        /// The arguments converted to the types the method takes.
+        /// </returns>
+        public override IList<object> ResolveMethodParameters(
+            MethodDescriptor method,
             IList<IJsonValue> values)
         {
             if (method == null)
@@ -18,27 +33,57 @@ namespace CallR
                 throw new ArgumentNullException("method");
             }
 
+            List<object> resolvedParameters;
+
             if (method.Parameters.Count == values.Count)
             {
-                return method
+                resolvedParameters = method
                     .Parameters
                     .Zip(values, ResolveParameter)
-                    .ToArray();
+                    .ToList();
             }
             else if (method.Parameters.Count > values.Count
                 || method.Parameters.Count < values.Count - 1)
             {
                 throw new ArgumentException("Incorrect number of arguments");
             }
-
-            // Add special parameter to parameters
-            var parameters = method.Parameters.ToList();
-            parameters.Add(new ParameterDescriptor
+            else
             {
-                ParameterType = typeof(CallRParams)
-            });
+                // Add special parameter to parameters
+                var parameters = method.Parameters.ToList();
+                parameters.Add(new ParameterDescriptor
+                {
+                    ParameterType = typeof(CallRParams)
+                });
 
-            return parameters.Zip(values, ResolveParameter).ToList();
+                resolvedParameters = parameters
+                    .Zip(values, ResolveParameter)
+                    .ToList();
+            }
+
+            if (typeof(CallRHub).IsAssignableFrom(method.Hub.HubType))
+            {
+                // Get the callrParams from the resolved parameters.
+                var callrParams = resolvedParameters
+                    .LastOrDefault() as CallRParams;
+
+                if (null == callrParams)
+                {
+                    callrParams = new CallRParams();
+                    resolvedParameters.Add(callrParams);
+                }
+
+                callrParams.Params = values.ToList();
+
+                // Remove the callrParams from the params
+                if (method.Parameters.Count == values.Count - 1)
+                {
+                    callrParams.Params.RemoveAt(callrParams.Params.Count - 1);
+                }
+            }
+            
+
+            return resolvedParameters;
         }
     }
 }

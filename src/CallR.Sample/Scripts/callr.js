@@ -186,14 +186,12 @@ var hubModule = (function () {
             var hasParams = false;
 
             for (var property in args) {
-                if (!args.hasOwnProperty(property) ||
-                    property === 'name' ||
-                    property === 'params') {
-                    continue;
+                if (args.hasOwnProperty(property) &&
+                    property !== 'name' &&
+                    property !== 'params') {
+                    callrParams[property] = args[property];
+                    hasParams = true;
                 }
-
-                callrParams[property] = args[property];
-                hasParams = true;
             }
 
             if (hasParams) {

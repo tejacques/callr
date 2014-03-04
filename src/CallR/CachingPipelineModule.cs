@@ -7,43 +7,62 @@ using System.Threading.Tasks;
 
 namespace CallR
 {
+    /// <summary>
+    /// A HubPipelineModule which caches results based on configurable settings
+    /// </summary>
     public class CachingPipelineModule : HubPipelineModule
     {
-        public override Func<IHubIncomingInvokerContext, Task<object>> BuildIncoming(Func<IHubIncomingInvokerContext, Task<object>> invoke)
+        /// <summary>
+        /// Overridden BuildIncoming function which returns without invoking
+        /// early if the method if the result is in the cache.
+        /// </summary>
+        /// <param name="invoke">The continuation of the hub pipeline</param>
+        /// <returns>The altered hub pipeline</returns>
+        public override Func<IHubIncomingInvokerContext, Task<object>> 
+            BuildIncoming(
+                Func<IHubIncomingInvokerContext, Task<object>> invoke)
         {
             return async context =>
             {
-                var cacheAttribute = context
-                    .MethodDescriptor
-                    .Attributes
-                    .Where(attr => attr.GetType() == typeof(HubCacheAttribute))
-                    .FirstOrDefault() as HubCacheAttribute;
-
-                string cacheKey = null;
-                object cachedVal = null;
-
-                cacheKey = BuildCacheKey(context, cacheAttribute);
-
-                // Check the cache
-                if (!string.IsNullOrEmpty(cacheKey))
+                if (typeof(CallRHub)
+                    .IsAssignableFrom(
+                    context.MethodDescriptor.Hub.HubType))
                 {
-                    if (cacheAttribute
-                        .Cache
-                        .TryGetValue(cacheKey, out cachedVal))
+                    var cacheAttribute = context
+                        .MethodDescriptor
+                        .Attributes
+                        .Where(attr =>
+                            attr.GetType() == typeof(HubCacheAttribute))
+                        .FirstOrDefault() as HubCacheAttribute;
+
+                    string cacheKey = null;
+                    object cachedVal = null;
+
+                    cacheKey = BuildCacheKey(context, cacheAttribute);
+
+                    // Check the cache
+                    if (!string.IsNullOrEmpty(cacheKey))
                     {
-                        return cachedVal;
+                        if (cacheAttribute
+                            .Cache
+                            .TryGetValue(cacheKey, out cachedVal))
+                        {
+                            return cachedVal;
+                        }
                     }
+
+                    var res = await base.BuildIncoming(invoke)(context);
+
+                    // Add to the cache
+                    if (!string.IsNullOrEmpty(cacheKey))
+                    {
+                        cacheAttribute.Cache.TryAdd(cacheKey, res);
+                    }
+
+                    return res;
                 }
 
-                var res = await base.BuildIncoming(invoke)(context);
-
-                // Add to the cache
-                if (!string.IsNullOrEmpty(cacheKey))
-                {
-                    cacheAttribute.Cache.TryAdd(cacheKey, res);
-                }
-
-                return res;
+                return await base.BuildIncoming(invoke)(context);
             };
         }
 
@@ -61,8 +80,13 @@ namespace CallR
             if ((cacheAttribute.CacheMethod & CacheMethod.Arguments)
                 == CacheMethod.Arguments)
             {
-                var sum = context.Args.Select(arg => arg.GetHashCode()).Sum();
-                list.Add(sum.ToString());
+                var callrHub = context.Hub as CallRHub;
+                long sum = callrHub
+                    .Parameters
+                    .Params
+                    .Select(arg => arg.ToString().GetHashCode())
+                    .Sum(x => (long)x);
+                    list.Add(sum.ToString());
             }
             if ((cacheAttribute.CacheMethod & CacheMethod.IP)
                 == CacheMethod.IP)

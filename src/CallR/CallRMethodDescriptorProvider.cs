@@ -23,6 +23,9 @@ namespace CallR
         private readonly ConcurrentDictionary<string, MethodDescriptor>
             _executableMethods;
 
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
         public CallRMethodDescriptorProvider()
         {
             _provider = new ReflectedMethodDescriptorProvider();
@@ -30,11 +33,28 @@ namespace CallR
                 new ConcurrentDictionary<string, MethodDescriptor>();
         }
 
+        /// <summary>
+        /// A fall-through to the underlying ReflectedMethodDescriptorProvider.
+        /// </summary>
+        /// <param name="hub">The hub to get the methods for.</param>
+        /// <returns>The method descriptors for the requested hub.</returns>
         public IEnumerable<MethodDescriptor> GetMethods(HubDescriptor hub)
         {
             return _provider.GetMethods(hub);
         }
 
+        /// <summary>
+        /// Attempts to get the method descriptor with the provided arguments.
+        /// </summary>
+        /// <param name="hub">The hub the request is going to.</param>
+        /// <param name="method">The name of the method in the hub.</param>
+        /// <param name="descriptor">
+        /// The method descriptor for the method.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters supplied to the method.
+        /// </param>
+        /// <returns>true if found, false otherwise.</returns>
         public bool TryGetMethod(
             HubDescriptor hub,
             string method, 
@@ -83,11 +103,14 @@ namespace CallR
             }
             else
             {
-                // NOTE: we normalize a null parameter array to be the same as an empty (i.e. Length == 0) parameter array
+                // NOTE: we normalize a null parameter array to be the same
+                // as an empty (i.e. Length == 0) parameter array
                 normalizedParameterCountKeyPart = "0";
             }
 
-            // NOTE: we always normalize to all uppercase since method names are case insensitive and could theoretically come in diff. variations per call
+            // NOTE: we always normalize to all uppercase since method names
+            // are case insensitive and could theoretically come in diff.
+            // variations per call
             string normalizedMethodName = method.ToUpperInvariant();
 
             string methodKey = hub.Name + "::" + normalizedMethodName + "(" + normalizedParameterCountKeyPart + ")";

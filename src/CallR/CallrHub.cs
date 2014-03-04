@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace CallR
 {
+    /// <summary>
+    /// A specific implementation of a Hub that
+    /// allows access to the CallRParams
+    /// </summary>
     public class CallRHub : Hub
     {
+        /// <summary>
+        /// The special parameters to CallR
+        /// </summary>
         public CallRParams Parameters { get; set; }
-
-        // Must DI IParameterResolver
-        // 1) Pass in an additional parameter in javascript to
-        //    hub.server.hubFunction with my special fields, like timeout
-        // 2) Create and DI a custom IParameterResolver that includes this
-        //    special argument even if it's not part of the Hub's
-        //    methodDescriptor.
-        // 3) Make a HubPipelineModule with a BuildIncoming method which
-        //    grabs the special argument from the context.Args, uses it,
-        //    and removes it from the Args if the actual Hub method doesn't
-        //    have that parameter, then continues down the pipeline.
     }
 }

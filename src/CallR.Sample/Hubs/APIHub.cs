@@ -47,7 +47,7 @@ namespace CallR.Sample.Hubs
             CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
             StateKey: "User",
             Minutes: 5)]
-        public object GetTest(string channel, string name, string message)
+        public object GetTest(string channel, string name, string message, string[] extra)
         {
             return new
             {
