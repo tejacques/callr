@@ -11,7 +11,7 @@ namespace CallR
     /// A specific implementation of a Hub that
     /// allows access to the CallRParams
     /// </summary>
-    public class CallRHub : Hub
+    public abstract class CallRHub : Hub
     {
         /// <summary>
         /// The special parameters to CallR

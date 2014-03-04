@@ -70,6 +70,7 @@
     <Compile Include="CallRHub.cs" />
     <Compile Include="HubCacheAttribute.cs" />
     <Compile Include="HubUtility.cs" />
+    <Compile Include="IAppBuilderExtensions.cs" />
     <Compile Include="LRUCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

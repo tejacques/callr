@@ -11,19 +11,7 @@ namespace CallR.Sample
         public void Configuration(IAppBuilder app)
         {
             // Any connection or hub wire up and configuration should go here
-            var lazyParamResolver = new Lazy<CallRParameterResolver>();
-            GlobalHost.DependencyResolver.Register(typeof(IParameterResolver),
-                () => lazyParamResolver.Value);
-
-            var lazyMethodDescriptorProvider = 
-                new Lazy<CallRMethodDescriptorProvider>();
-            GlobalHost.DependencyResolver.Register(
-                typeof(IMethodDescriptorProvider),
-                () => lazyMethodDescriptorProvider.Value);
-
-            GlobalHost.HubPipeline.AddModule(new CallRPipelineModule());
-            GlobalHost.HubPipeline.AddModule(new CachingPipelineModule());
-            
+            app.ConfigureCallR();
             app.MapSignalR();
         }
     }
