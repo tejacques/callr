@@ -9,8 +9,14 @@ using System.Web;
 namespace CallR.Sample.Hubs
 {
     [HubName("API")]
-    public class APIHub : Hub
+    public class APIHub : CallRHub
     {
+        public override Task OnConnected()
+        {
+            Clients.Caller.User = "TestUser";
+            Clients.Caller.connected();
+            return base.OnConnected();
+        }
         public void Send(string channel, string name, string message)
         {
             // Call the sendMessage method to update clients.
@@ -24,6 +30,10 @@ namespace CallR.Sample.Hubs
                 });
         }
 
+        [HubCache(
+            CacheMethod:CacheMethod.Arguments|CacheMethod.StateKey,
+            StateKey:"User",
+            Minutes:5)]
         public object GetTest()
         {
             return new {
@@ -31,6 +41,51 @@ namespace CallR.Sample.Hubs
                 name = "TestName",
                 message = "TestMessage"
             };
+        }
+
+        [HubCache(
+            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            StateKey: "User",
+            Minutes: 5)]
+        public object GetTest(
+            string channel,
+            string name,
+            string message,
+            string[] extra)
+        {
+            return new
+            {
+                channel = channel,
+                name = name,
+                message = message
+            };
+        }
+
+        [HubCache(
+            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            StateKey: "User",
+            Minutes: 5)]
+        public object GetTestList(
+            string channel,
+            string name,
+            string message,
+            int num)
+        {
+            var res = new
+            {
+                channel = channel,
+                name = name,
+                message = message
+            };
+
+            List<object> l = new List<object>();
+
+            for(int i = 0; i < num; i++)
+            {
+                l.Add(res);
+            }
+
+            return l;
         }
 
         public void SendTest()

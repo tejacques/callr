@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.3 AngularJS Module
+* callr JavaScript Library v1.1.0 AngularJS Module
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -118,6 +118,8 @@
                         return this;
                     }
 
+                    hub._myRPC = convertToAngularPromise(hub._myRPC);
+                    hub._myQueueRPC = convertToAngularPromise(hub._myQueueRPC);
                     autoApplyAll(hub.rpc);
                     autoApplyAll(hub.queue.rpc);
                     autoApplySpecific(hub, "connect");

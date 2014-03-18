@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.0.5
+* callr JavaScript Library v1.1.0
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -77,7 +77,11 @@ var hubModule = (function () {
         // OnConnected is called on the server. If no
         // events are bound, OnConnected is not called
         // which is problematic for setting up groups.
-        hub.bindEvent("connected");
+        function connected() {
+            // Do nothing
+        }
+
+        hub.bindEvent("connected", connected);
 
         // The context of conn.start must be the conn
         // We're using a function wrapper here instead
@@ -164,8 +168,56 @@ var hubModule = (function () {
             return promise;
         }
 
-        hub.rpc = {};
-        hub.queue = { rpc: {} };
+        function _rpc(args) {
+            if (!args.name) {
+                throw new Error("No function name provided.");
+            }
+
+            var name = args.name;
+            var params = args.params;
+
+            if (!args.params) {
+                params = [];
+            }
+
+            if (!$.isArray(params)) {
+                params = [params];
+            }
+
+            var invokeArgs = $.merge([name], params);
+
+            var callrParams = {};
+            var hasParams = false;
+
+            for (var property in args) {
+                if (args.hasOwnProperty(property) &&
+                    property !== 'name' &&
+                    property !== 'params') {
+                    callrParams[property] = args[property];
+                    hasParams = true;
+                }
+            }
+
+            if (hasParams) {
+                invokeArgs.push(callrParams);
+            }
+
+            return hub.invoke.apply(hub, invokeArgs);
+        }
+
+        hub._myRPC = makeRPCFunction(_rpc);
+
+        hub._myQueueRPC = makeRPCFunction(_rpc, true);
+
+        hub.rpc = function (args) {
+            return hub._myRPC(args);
+        };
+
+        hub.queue = {
+            rpc: function (args) {
+                return hub._myQueueRPC(args);
+            }
+        };
 
         function makeRPCFunction(fn, queue) {
             return function () {
@@ -189,18 +241,14 @@ var hubModule = (function () {
             hub.queue.rpc[name] = makeRPCFunction(fn, true);
         }
 
-        hub.addRPC = function (name, nameOnServer) {
+        hub.addRPC = function (name) {
             if (typeof (name) === 'undefined') {
                 throw new Error("addRPC requires a name");
             }
 
-            if (typeof (nameOnServer) === 'undefined') {
-                nameOnServer = name.charAt(0).toUpperCase() + name.slice(1);
-            }
-
             function rpcCall() {
                 var args = [].slice.call(arguments);
-                return hub.invoke.apply(hub, $.merge([nameOnServer], args));
+                return hub.invoke.apply(hub, $.merge([name], args));
             }
 
             _addRPC(name, rpcCall);
