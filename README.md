@@ -10,6 +10,12 @@ Dependencies
 
 ### CallR ###
 
+* SignalR
+* CallR.JS
+* Polarize
+
+### CallR.JS ###
+
 * jQuery
 * SignalR 
 
@@ -30,6 +36,13 @@ CallR is available as a NuGet package: https://nuget.org/packages/CallR and a Bo
 
 ```
 PM> Install-Package CallR
+```
+
+### CallR.JS ###
+
+#### NuGet ####
+```
+PM> Install-Package CallR.JS
 ```
 
 #### Bower ####
@@ -55,7 +68,7 @@ bower install callr.angular
 Why was it made?
 ----------------
 
-[SignalR](http://www.asp.net/signalr) is an amazing tool for real-time services in ASP.NET. CallR builds on top of SignalR to add a suite of utilities that make it easier to use SignalR effectively. The primary advantage of CallR is the queuing of requests to send a batch of calls to the server at once. This can help with mobile performance to minimize use of the radio on the phone. CallR.Angular also transforms SignalR hubs into a native Angular Module, which will properly apply scope changes so you don't have to.
+[SignalR](http://www.asp.net/signalr) is an amazing tool for real-time services in ASP.NET. CallR builds on top of SignalR to add a suite of utilities that make it easier to use SignalR effectively. The primary advantage of CallR is the queuing of requests to send a batch of calls to the server at once. This can help with mobile performance to minimize use of the radio on the phone. CallR.Angular also transforms SignalR hubs into a native Angular Module, which will properly apply scope changes so you don't have to. Finally, CallR extends SignalR by adding a set of optional parameters to calls, which allow for things like caching, filtering results, and timeouts for long requests.
 
 Capabilities
 ------------
@@ -68,6 +81,11 @@ Extension methods / Static methods
 * `SendToClients(dynamic clients, string eventType, params object[] parameters)`: Send the specified eventType with the provided parameters to the provided clients.
 * `SendToGroup<THub>(this THub hub, string groupName, string eventType, params object[] parameters)` (Extension method): Send the specified eventType with the provided parameters to the given group on the hub.
 * `SendToGroup<THub>(string groupName, string eventType, params object[] parameters)`: Send the specified eventType with the provided parameters to the given group on the hub.
+ 
+Added Functionality
+* `app.ConfigureCallR()` (Extension method on IAppBuilder): Configures the CallR hub pipeline
+* `CallRHub`: An implementation of Hub that allows access to `CallRParams`, which include the requested `Polarize` parameters: fields and constraints, as well as a requestTimeout in ms.
+* `HubCache` (Attribute): Allows the result of a Hub method to be cached according to the a configurable set of parameters, including the method arguments, client state, client IP address, UserAgent, Authenticated Username, and ConnectionID. This allows for paginating cached results easily.
 
 ### JavaScript ###
 
@@ -78,7 +96,7 @@ Extension methods / Static methods
 * `hub.disconnect(async, notifyServer)`: same as `hub.stop(async, notifyServer)`
 * `hub.bindEvent(eventName, callback)`: same as `hub.on(eventName, callback)`
 * `hub.unbindEvent(eventName, callback)`: same as `hub.off(eventName, callback)`
-* `hub.rpc`: replaces hub.server for making calls to the back end. Sends any queued requests along with the current request.
+* `hub.rpc`: replaces hub.server for making calls to the back end. Sends any queued requests along with the current request. Also acts as a function that takes a request. See CallR Examples for more information.
 * `hub.queue.rpc`: same as hub.rpc, but queues up calls to the server rather than immediately requesting them.
 * `hub.flushRequests(cb)`: Send all queued requests to the server, then execute the callback once all requests has been completed. Will open a connection if necessary, and close the connection afterwards if it was closed when the flush began.
 * `hub.addRPC(name, nameOnServer[, argumentName, ...])`: Creates a new rpc call with the provided name, name of the function on the server, and the names of the arguments. Calls to that function will verify that the number of arguments match.
@@ -111,6 +129,14 @@ public class ChatHub : Hub
                 message = message
             });
     }
+    
+    public object GetTestMessage(string name, string message)
+    {
+        return new {
+            name = name,
+            message = message
+        };
+    }
 }
 ```
 
@@ -128,12 +154,63 @@ public class ChatNotifier
 
 ### JavaScript ###
 
+#### Hub RPC Calls ####
+
+##### Using RPC Object #####
+``` javascript
+hub = hubModule.init("hubName")
+    .addRPC("methodName");
+    
+hub.rpc.methodName(arg[, ...]).done(function(result) {
+    // Do something with result...
+    console.log(result);
+});
+
+hub.rpc.methodName(arg[, ...], { // however many arguments the function takes, plus optional callRParams
+    fields: ["field.path1", "field.path2"], // The fields to include in the result
+    constraints: { // Constraints on the fields, currently only for array/list length and offset
+        "field.path" : {
+            offset: 0, // starting index in resulting array/list
+            limit: 10  // number of results to return in array/list
+        }
+    },
+    timeout: 1000 // ms timeout
+});
+```
+
+##### Using RPC Function #####
+
+``` javascript
+hub.rpc({
+    name: "methodName",
+    params: [arg1, arg2, ...]
+});
+
+hub.rpc({
+    name: "methodName",
+    params: arg
+});
+
+hub.rpc({
+    name: "methodName",
+    params: arg,
+    fields: ["field.path1", "field.path2"], // The fields to include in the result
+    constraints: { // Constraints on the fields, currently only for array/list length and offset
+        "field.path" : {
+            offset: 0, // starting index in resulting array/list
+            limit: 10  // number of results to return in array/list
+        }
+    },
+    timeout: 1000 // ms timeout
+});
+```
+
 #### CallR ####
 
 ``` javascript
 var hub = hubModule
     .init("Chat")
-    .addRPC("send", "Send", "name", "message");
+    .addRPC("send");
 
 var messages = [];
 
@@ -145,6 +222,23 @@ hub.bindEvent("message", function(message) {
 hub.connect().done(function() {
     $("#sendMessage").click(function () {
         hub.rpc.send("TestName", "TestMessage");
+    });
+    
+    $("#getTestMessage1").click(function () {
+        // Method 1
+        hub.rpc.getTestMessage("TestName", "TestMessage").done(function(message) {
+            console.log(message);
+        });
+    });
+    
+    $("#getTestMessage2").click(function () {
+        // Method 2
+        hub.rpc({
+            name: "getTestMessage",
+            params: ["TestName", "TestMessage"]
+        }).done(function(message) {
+            console.log(message);
+        });
     });
 });
 ```
@@ -170,6 +264,23 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         
         $scope.sendMessage = function(name, message) {
             hub.rpc.send(name, message);
+        }
+        
+        $scope.getTestMessage1 = function(name, message) {
+            // Method 1
+            hub.rpc.getTestMessage("TestName", "TestMessage").then(function(message) {
+                console.log(message);
+            });
+        }
+        
+        $scope.getTestMessage2 = function(name, message) {
+            // Method 2
+            hub.rpc({
+                name: "getTestMessage",
+                params: ["TestName", "TestMessage"]
+            }).then(function(message) {
+                console.log(message);
+            });
         }
     }
 ]);
