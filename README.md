@@ -158,15 +158,13 @@ public class ChatNotifier
 
 ##### Using RPC Object #####
 ``` javascript
-hub = hubModule.init("hubName")
-    .addRPC("methodName");
-    
 hub.rpc.methodName(arg[, ...]).done(function(result) {
     // Do something with result...
     console.log(result);
 });
 
-hub.rpc.methodName(arg[, ...], { // however many arguments the function takes, plus optional callRParams
+hub.rpc.methodName(arg[, ...], {
+    // optional callRParams
     fields: ["field.path1", "field.path2"], // The fields to include in the result
     constraints: { // Constraints on the fields, currently only for array/list length and offset
         "field.path" : {
@@ -194,6 +192,7 @@ hub.rpc({
 hub.rpc({
     name: "methodName",
     params: arg,
+    // optional callRParams
     fields: ["field.path1", "field.path2"], // The fields to include in the result
     constraints: { // Constraints on the fields, currently only for array/list length and offset
         "field.path" : {
