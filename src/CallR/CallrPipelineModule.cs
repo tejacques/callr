@@ -66,7 +66,9 @@ namespace CallR
                     if (actualNum > expectedNum)
                     {
                         return JsonFilter.Create(
-                            res, hub.Parameters.Fields);
+                            res,
+                            hub.Parameters.Fields,
+                            hub.Parameters.Constraints);
                     }
 
                     return res;

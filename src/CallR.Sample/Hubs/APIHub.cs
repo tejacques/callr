@@ -47,7 +47,11 @@ namespace CallR.Sample.Hubs
             CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
             StateKey: "User",
             Minutes: 5)]
-        public object GetTest(string channel, string name, string message, string[] extra)
+        public object GetTest(
+            string channel,
+            string name,
+            string message,
+            string[] extra)
         {
             return new
             {
@@ -55,6 +59,33 @@ namespace CallR.Sample.Hubs
                 name = name,
                 message = message
             };
+        }
+
+        [HubCache(
+            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            StateKey: "User",
+            Minutes: 5)]
+        public object GetTestList(
+            string channel,
+            string name,
+            string message,
+            int num)
+        {
+            var res = new
+            {
+                channel = channel,
+                name = name,
+                message = message
+            };
+
+            List<object> l = new List<object>();
+
+            for(int i = 0; i < num; i++)
+            {
+                l.Add(res);
+            }
+
+            return l;
         }
 
         public void SendTest()

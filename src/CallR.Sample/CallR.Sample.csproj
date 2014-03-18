@@ -68,7 +68,7 @@
     </Reference>
     <Reference Include="Polarize, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Polarize.0.1.3\lib\Net40\Polarize.dll</HintPath>
+      <HintPath>..\packages\Polarize.0.2.0\lib\Net40\Polarize.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />

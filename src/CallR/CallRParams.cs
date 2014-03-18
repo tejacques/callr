@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Json;
+using Polarize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,11 @@ namespace CallR
         /// The list of Fields to filter in the result.
         /// </summary>
         public string[] Fields { get; set; }
+
+        /// <summary>
+        /// The constraints on the Fields to filter in the result.
+        /// </summary>
+        public Dictionary<string, JsonConstraint> Constraints { get; set; }
 
         /// <summary>
         /// An optional timeout
