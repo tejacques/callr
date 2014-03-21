@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "homepage": "https://github.com/tejacques/callr",
   "authors": [
-    "Tom Jacques <tejacques@gmail.com>"
+    "Tom Jacques"
   ],
   "description": "A SignalR utility library",
   "main": [
