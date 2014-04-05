@@ -117,7 +117,7 @@ Example Usage
 
 ``` csharp
 [HubName("Chat")]
-public class ChatHub : Hub
+public class ChatHub : CallRHub
 {
     public void Send(string name, string message)
     {
