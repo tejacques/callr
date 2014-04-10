@@ -209,7 +209,8 @@ hub.rpc({
 ``` javascript
 var hub = hubModule
     .init("Chat")
-    .addRPC("send");
+    .addRPC("send")
+    .addRPC("getTestMessage");
 
 var messages = [];
 
@@ -253,7 +254,8 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         
         var hub = hubFactory
             .create("Chat")
-            .addRPC("send", "Send", "name", "message");
+            .addRPC("send")
+            .addRPC("getTestMessage");
         
         hub.bindEvent("message", function(message) {
             console.log("Received: " + message);
