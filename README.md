@@ -99,7 +99,7 @@ Added Functionality
 * `hub.rpc`: replaces hub.server for making calls to the back end. Sends any queued requests along with the current request. Also acts as a function that takes a request. See CallR Examples for more information.
 * `hub.queue.rpc`: same as hub.rpc, but queues up calls to the server rather than immediately requesting them.
 * `hub.flushRequests(cb)`: Send all queued requests to the server, then execute the callback once all requests has been completed. Will open a connection if necessary, and close the connection afterwards if it was closed when the flush began.
-* `hub.addRPC(name, nameOnServer[, argumentName, ...])`: Creates a new rpc call with the provided name, name of the function on the server, and the names of the arguments. Calls to that function will verify that the number of arguments match.
+* `hub.addRPC(name)`: Creates a new rpc call with the provided name.
 
 #### CallR.Angular ####
 
