@@ -47,9 +47,13 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         };
 
         $scope.getTestMessage = function () {
-            hub.rpc.getTest().then($scope.addMessage, function (error) {
-                console.log(error);
-            });
+            for (var i = 0; i < 10; i++) {
+                setTimeout(function () {
+                    hub.rpc.getTest().then($scope.addMessage, function (error) {
+                        console.log(error);
+                    });
+                }, i * 10);
+            }
         };
 
         $scope.queueGetTestMessage = function () {

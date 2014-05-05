@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.0
+* callr JavaScript Library v1.1.1
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -106,8 +106,18 @@ var hubModule = (function () {
             return deferred.promise();
         }
 
+        var flushesInFlight = 0;
+        var closeAfter = false;
+
         hub.flushRequests = function (cb) {
-            var requestsRemaining = _requestQueue.length;
+            // Increment the flushes in flight
+            flushesInFlight++;
+
+            // Swap out the request queue
+            var rq = _requestQueue;
+            _requestQueue = [];
+
+            var requestsRemaining = rq.length;
 
             if (requestsRemaining === 0) {
                 hub.connection.log("No requests to flush");
@@ -119,17 +129,21 @@ var hubModule = (function () {
 
             hub.connection.log("Flushing request queue");
 
-            var closeAfter = false;
-            if (conn.state === $.signalR.connectionState.disconnected) {
+            if (closeAfter || conn.state === $.signalR.connectionState.disconnected) {
                 closeAfter = true;
             }
 
             var requestComplete = function () {
                 requestsRemaining--;
                 if (requestsRemaining === 0) {
-                    // All requests complete
+                    // All requests complete, decrement flushesInFlight
+                    flushesInFlight--;
+
                     hub.connection.log("Finished flushing request queue");
-                    if (closeAfter) {
+                    if (closeAfter && 0 === flushesInFlight) {
+                        // Reset closeAfter
+                        closeAfter = false;
+                        hub.connection.log("Closing connection");
                         hub.disconnect();
                     }
 
@@ -154,9 +168,9 @@ var hubModule = (function () {
             }
 
             hub.connect().then(function () {
-                var len = _requestQueue.length;
+                var len = rq.length;
                 for (var i = 0; i < len; i++) {
-                    _queueRequest(_requestQueue[i][0], _requestQueue[i][1]);
+                    _queueRequest(rq[i][0], rq[i][1]);
                 }
 
                 _requestQueue = [];

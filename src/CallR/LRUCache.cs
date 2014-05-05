@@ -128,31 +128,34 @@ namespace CallR
                 // Add the entry
                 lock (this)
                 {
-                    if (this.IsFull)
+                    if (!this._entries.TryGetValue(key, out entry))
                     {
-                        // Re-use the CacheNode entry
-                        entry = this._tail;
-                        _entries.Remove(this._tail.Key);
-
-                        // Reset with new values
-                        entry.Key = key;
-                        entry.Value = value;
-                        entry.LastAccessed = DateTime.Now;
-
-                        // Next and Prev don't need to be reset. Move to front
-                        // will do the right thing.
-                    }
-                    else
-                    {
-                        this._count++;
-                        entry = new CacheNode()
+                        if (this.IsFull)
                         {
-                            Key = key,
-                            Value = value,
-                            LastAccessed = DateTime.Now
-                        };
+                            // Re-use the CacheNode entry
+                            entry = this._tail;
+                            _entries.Remove(this._tail.Key);
+
+                            // Reset with new values
+                            entry.Key = key;
+                            entry.Value = value;
+                            entry.LastAccessed = DateTime.Now;
+
+                            // Next and Prev don't need to be reset.
+                            // Move to front will do the right thing.
+                        }
+                        else
+                        {
+                            this._count++;
+                            entry = new CacheNode()
+                            {
+                                Key = key,
+                                Value = value,
+                                LastAccessed = DateTime.Now
+                            };
+                        }
+                        _entries.Add(key, entry);
                     }
-                    _entries.Add(key, entry);
                 }
             }
             else
