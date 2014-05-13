@@ -1,0 +1,340 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CallR</name>
+    </assembly>
+    <members>
+        <member name="T:CallR.CachingPipelineModule">
+            <summary>
+            A HubPipelineModule which caches results based on configurable settings
+            </summary>
+        </member>
+        <member name="M:CallR.CachingPipelineModule.BuildIncoming(System.Func{Microsoft.AspNet.SignalR.Hubs.IHubIncomingInvokerContext,System.Threading.Tasks.Task{System.Object}})">
+            <summary>
+            Overridden BuildIncoming function which returns without invoking
+            early if the method if the result is in the cache.
+            </summary>
+            <param name="invoke">The continuation of the hub pipeline</param>
+            <returns>The altered hub pipeline</returns>
+        </member>
+        <member name="T:CallR.CallRMethodDescriptorProvider">
+            <summary>
+            An implementation of IMethodDescriptorProvider which uses a
+            ReflectedMethodDescriptorProvider under the hood, retrying
+            failed lookups without the last parameter, which may be optional
+            CallRParameters in CallR.
+            </summary>
+        </member>
+        <member name="M:CallR.CallRMethodDescriptorProvider.#ctor">
+            <summary>
+            The default constructor.
+            </summary>
+        </member>
+        <member name="M:CallR.CallRMethodDescriptorProvider.GetMethods(Microsoft.AspNet.SignalR.Hubs.HubDescriptor)">
+            <summary>
+            A fall-through to the underlying ReflectedMethodDescriptorProvider.
+            </summary>
+            <param name="hub">The hub to get the methods for.</param>
+            <returns>The method descriptors for the requested hub.</returns>
+        </member>
+        <member name="M:CallR.CallRMethodDescriptorProvider.TryGetMethod(Microsoft.AspNet.SignalR.Hubs.HubDescriptor,System.String,Microsoft.AspNet.SignalR.Hubs.MethodDescriptor@,System.Collections.Generic.IList{Microsoft.AspNet.SignalR.Json.IJsonValue})">
+            <summary>
+            Attempts to get the method descriptor with the provided arguments.
+            </summary>
+            <param name="hub">The hub the request is going to.</param>
+            <param name="method">The name of the method in the hub.</param>
+            <param name="descriptor">
+            The method descriptor for the method.
+            </param>
+            <param name="parameters">
+            The parameters supplied to the method.
+            </param>
+            <returns>true if found, false otherwise.</returns>
+        </member>
+        <member name="T:CallR.CallRParameterResolver">
+            <summary>
+            The SignalR ParameterResolver for CallR
+            </summary>
+        </member>
+        <member name="M:CallR.CallRParameterResolver.ResolveMethodParameters(Microsoft.AspNet.SignalR.Hubs.MethodDescriptor,System.Collections.Generic.IList{Microsoft.AspNet.SignalR.Json.IJsonValue})">
+            <summary>
+            Overridden ResolveMethodParameters which adds the optional
+            parameters to the HubMethod call if they do not exist.
+            </summary>
+            <param name="method">
+            The method descriptor of the hub method being invoked.
+            </param>
+            <param name="values">The values that were passed.</param>
+            <returns>
+            The arguments converted to the types the method takes.
+            </returns>
+        </member>
+        <member name="T:CallR.CallRParams">
+            <summary>
+            The special optional parameters sent to CallR
+            </summary>
+        </member>
+        <member name="P:CallR.CallRParams.Fields">
+            <summary>
+            The list of Fields to filter in the result.
+            </summary>
+        </member>
+        <member name="P:CallR.CallRParams.Constraints">
+            <summary>
+            The constraints on the Fields to filter in the result.
+            </summary>
+        </member>
+        <member name="P:CallR.CallRParams.Timeout">
+            <summary>
+            An optional timeout
+            </summary>
+        </member>
+        <member name="P:CallR.CallRParams.Params">
+            <summary>
+            The original params
+            </summary>
+        </member>
+        <member name="T:CallR.CallRPipelineModule">
+            <summary>
+            The SinglaR HubPipelineModule for CallR
+            </summary>
+        </member>
+        <member name="M:CallR.CallRPipelineModule.BuildIncoming(System.Func{Microsoft.AspNet.SignalR.Hubs.IHubIncomingInvokerContext,System.Threading.Tasks.Task{System.Object}})">
+            <summary>
+            Overridden BuildIncoming method which removes the optional
+            parameters from the HubMethod call if they are not used.
+            </summary>
+            <param name="invoke">The passed in function.</param>
+            <returns>A modified version of the passed in function.</returns>
+        </member>
+        <member name="T:CallR.CallRHub">
+            <summary>
+            A specific implementation of a Hub that
+            allows access to the CallRParams
+            </summary>
+        </member>
+        <member name="P:CallR.CallRHub.Parameters">
+            <summary>
+            The special parameters to CallR
+            </summary>
+        </member>
+        <member name="T:CallR.HubCacheAttribute">
+            <summary>
+            An attribute the creates an LRU Cache for the hub method and specifies
+            what parameters to use to create the keys to that cache.
+            </summary>
+        </member>
+        <member name="F:CallR.HubCacheAttribute.Cache">
+            <summary>
+            The Cache
+            </summary>
+        </member>
+        <member name="M:CallR.HubCacheAttribute.#ctor(CallR.CacheMethod,System.Int32,System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Creates a new LRU Cache for a Hub's method.
+            </summary>
+            <param name="CacheMethod">
+            How to construct the key for the cache.
+            </param>
+            <param name="Capacity">The number of items in the cache</param>
+            <param name="Hours">The number of hours in the TTL</param>
+            <param name="Minutes">The number of minutes in the TTL</param>
+            <param name="Seconds">The number of seconds in the TTL</param>
+            <param name="StateKey">The key in the hubstate to use.</param>
+        </member>
+        <member name="P:CallR.HubCacheAttribute.CacheMethod">
+            <summary>
+            The bitmask of information to use for constructing the cache key.
+            </summary>
+        </member>
+        <member name="P:CallR.HubCacheAttribute.TimeToLive">
+            <summary>
+            The time to live of the cache.
+            </summary>
+        </member>
+        <member name="P:CallR.HubCacheAttribute.StateKey">
+            <summary>
+            The key in the hub state to use for constructing the cache key.
+            </summary>
+        </member>
+        <member name="P:CallR.HubCacheAttribute.CustomKey">
+            <summary>
+            Gets or sets a callback delegate which returns a list of strings to be
+                used as the cache key
+            </summary>
+        </member>
+        <member name="T:CallR.CacheMethod">
+            <summary>
+            Methods of constructing the cache key.
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.None">
+            <summary>
+            Don't cache
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.IP">
+            <summary>
+            The User's IP address
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.UserAgent">
+            <summary>
+            The User's UserAgent
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.User">
+            <summary>
+            The User's Authenticated Username
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.ConnectionId">
+            <summary>
+            The User's unique connection ID
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.Arguments">
+            <summary>
+            The arguments to the method
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.StateKey">
+            <summary>
+            The value in the specified StateKey
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.Callback">
+            <summary>
+            Cache key is determined by a callback delegate
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.All">
+            <summary>
+            All methods
+            </summary>
+        </member>
+        <member name="T:CallR.HubUtility">
+            <summary>
+            Utility functions for interacting with Hubs in SignalR
+            </summary>
+        </member>
+        <member name="M:CallR.HubUtility.SendToClients(System.Object,System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters to the given clients.
+            </summary>
+            <param name="clients">The clients to send to</param>
+            <param name="eventType">The type of event</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="M:CallR.HubUtility.SendToGroup``1(``0,System.String,System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters
+            to the given group in the specified hub.
+            </summary>
+            <typeparam name="THub">The hub type</typeparam>
+            <param name="hub">The hub</param>
+            <param name="groupName">The group name</param>
+            <param name="eventType">The event type</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="M:CallR.HubUtility.SendToAll``1(``0,System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters
+            to everyone in the specified hub.
+            </summary>
+            <typeparam name="THub">The hub type</typeparam>
+            <param name="hub">The hub</param>
+            <param name="eventType">The event type</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="M:CallR.HubUtility.SendToGroup``1(System.String,System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters
+            to the given group in the specified hub.
+            </summary>
+            <typeparam name="THub">The hub type</typeparam>
+            <param name="groupName">The group name</param>
+            <param name="eventType">The event type</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="M:CallR.HubUtility.SendToAll``1(System.String,System.Object[])">
+            <summary>
+            Sends an event with the specified parameters
+            to everyone in the specified hub.
+            </summary>
+            <typeparam name="THub">The hub type</typeparam>
+            <param name="eventType">The event type</param>
+            <param name="parameters">The event parameters</param>
+        </member>
+        <member name="T:CallR.IAppBuilderExtensions">
+            <summary>
+            Extension method for configuring CallR
+            </summary>
+        </member>
+        <member name="M:CallR.IAppBuilderExtensions.ConfigureCallR(Owin.IAppBuilder)">
+            <summary>
+            Extension method to configure's CallR with the default
+            </summary>
+            <param name="app">The Owin IAppBuilder</param>
+        </member>
+        <member name="T:CallR.LRUCache`2">
+            <summary>
+            An LRU Cache implementation.
+            </summary>
+            <typeparam name="K">The key type.</typeparam>
+            <typeparam name="V">The value type.</typeparam>
+        </member>
+        <member name="M:CallR.LRUCache`2.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            A least recently used cache with a time to live.
+            </summary>
+            <param name="capacity">
+            The number of entries the cache will hold
+            </param>
+            <param name="hours">The number of hours in the TTL</param>
+            <param name="minutes">The number of minutes in the TTL</param>
+            <param name="seconds">The number of seconds in the TTL</param>
+        </member>
+        <member name="M:CallR.LRUCache`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the item being stored.
+            </summary>
+            <returns>The cached value at the given key.</returns>
+        </member>
+        <member name="M:CallR.LRUCache`2.TryAdd(`0,`1)">
+            <summary>
+            Sets the item being stored to the supplied value.
+            </summary>
+            <param name="key">The cache key.</param>
+            <param name="value">The value to set in the cache.</param>
+            <returns>True if the set was successful. False otherwise.</returns>
+        </member>
+        <member name="M:CallR.LRUCache`2.Clear">
+            <summary>
+            Removes the stored data.
+            </summary>
+            <returns>True if the removal was successful. False otherwise.</returns>
+        </member>
+        <member name="M:CallR.LRUCache`2.MoveToHead(CallR.LRUCache{`0,`1}.CacheNode)">
+            <summary>
+            Moved the provided entry to the head of the list.
+            </summary>
+            <param name="entry">The CacheNode entry to move up.</param>
+        </member>
+        <member name="P:CallR.LRUCache`2.Count">
+            <summary>
+            Gets the current number of entries in the cache.
+            </summary>
+        </member>
+        <member name="P:CallR.LRUCache`2.Capacity">
+            <summary>
+            Gets the maximum number of entries in the cache.
+            </summary>
+        </member>
+        <member name="P:CallR.LRUCache`2.IsFull">
+            <summary>
+            Gets whether or not the cache is full.
+            </summary>
+        </member>
+    </members>
+</doc>
