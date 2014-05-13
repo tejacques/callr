@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Json;
 
 namespace CallR
 {
@@ -64,6 +65,12 @@ namespace CallR
         /// The key in the hub state to use for constructing the cache key.
         /// </summary>
         public string StateKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets a callback delegate which returns a list of strings to be
+        ///     used as the cache key
+        /// </summary>
+        public Func<IList<IJsonValue>, IEnumerable<string>> CustomKey { get; set; }
     }
 
     /// <summary>
@@ -106,6 +113,11 @@ namespace CallR
         /// The value in the specified StateKey
         /// </summary>
         StateKey = 0x20,
+
+        /// <summary>
+        /// Cache key is determined by a callback delegate
+        /// </summary>
+        Callback = 0x40,
 
         /// <summary>
         /// All methods

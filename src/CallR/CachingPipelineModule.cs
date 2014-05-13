@@ -137,6 +137,18 @@ namespace CallR
                     list.Add(StateValue);
                 }
             }
+            if(cacheAttribute.CacheMethod.HasFlag(CacheMethod.Callback)
+                && cacheAttribute.CustomKey != null)
+            {
+                var callrHub = context.Hub as CallRHub;
+
+                list.AddRange(
+                    cacheAttribute.CustomKey(
+                        callrHub
+                            .Parameters
+                            .Params));
+                
+            }
 
             return string.Join("-", list);
         }
