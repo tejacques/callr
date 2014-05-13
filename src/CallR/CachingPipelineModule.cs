@@ -138,12 +138,12 @@ namespace CallR
                 }
             }
             if(cacheAttribute.CacheMethod.HasFlag(CacheMethod.Callback)
-                && cacheAttribute.KeyDel != null)
+                && cacheAttribute.CustomKey != null)
             {
                 var callrHub = context.Hub as CallRHub;
 
                 list.AddRange(
-                    cacheAttribute.KeyDel(
+                    cacheAttribute.CustomKey(
                         callrHub
                             .Parameters
                             .Params));

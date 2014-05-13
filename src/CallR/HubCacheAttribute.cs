@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Json;
 
 namespace CallR
 {
@@ -69,14 +70,7 @@ namespace CallR
         /// Gets or sets a callback delegate which returns a list of strings to be
         ///     used as the cache key
         /// </summary>
-        public CacheKeyDel KeyDel { get; set; }
-
-        /// <summary>
-        /// Delegate for getting a list of strings from function parameters
-        /// </summary>
-        /// <param name="args">Some number of objects</param>
-        /// <returns>A list of strings</returns>
-        public delegate List<string> CacheKeyDel(params object[] args);
+        public Func<IList<IJsonValue>, IEnumerable<string>> CustomKey { get; set; }
     }
 
     /// <summary>
