@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CallR</id>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <title>CallR</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -18,6 +18,9 @@
     </summary>
     <releaseNotes>
         Notes:
+
+        Version 1.1.7
+            - Update dependency on Polarize to include a critical bug fix.
 
         Version 1.1.6
             - Add CustomKey lambda for creating a cache key from function arguments.
@@ -61,7 +64,7 @@
     <dependencies>
         <dependency id="Microsoft.AspNet.SignalR" version="[2.0.3,)" />
         <dependency id="CallR.JS" version="[1.1.1,)"/>
-        <dependency id="Polarize" version="[0.2.1,)"/>
+        <dependency id="Polarize" version="[0.2.2,)"/>
     </dependencies>
     <copyright>Copyright 2014</copyright>
     <tags>SignalR</tags>
