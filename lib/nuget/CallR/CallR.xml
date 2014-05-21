@@ -157,6 +157,12 @@
             The key in the hub state to use for constructing the cache key.
             </summary>
         </member>
+        <member name="P:CallR.HubCacheAttribute.CustomKey">
+            <summary>
+            Gets or sets a callback delegate which returns a list of strings to be
+                used as the cache key
+            </summary>
+        </member>
         <member name="T:CallR.CacheMethod">
             <summary>
             Methods of constructing the cache key.
@@ -195,6 +201,11 @@
         <member name="F:CallR.CacheMethod.StateKey">
             <summary>
             The value in the specified StateKey
+            </summary>
+        </member>
+        <member name="F:CallR.CacheMethod.Callback">
+            <summary>
+            Cache key is determined by a callback delegate
             </summary>
         </member>
         <member name="F:CallR.CacheMethod.All">
