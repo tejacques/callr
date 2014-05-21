@@ -137,7 +137,7 @@ namespace CallR
                     list.Add(StateValue);
                 }
             }
-            if(cacheAttribute.CacheMethod.HasFlag(CacheMethod.Callback)
+            if(cacheAttribute.CacheMethod.HasFlag(CacheMethod.CustomKey)
                 && cacheAttribute.CustomKey != null)
             {
                 var callrHub = context.Hub as CallRHub;

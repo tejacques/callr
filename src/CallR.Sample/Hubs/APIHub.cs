@@ -30,10 +30,16 @@ namespace CallR.Sample.Hubs
                 });
         }
 
+        public static IEnumerable<string> SomeMethodName(
+            IList<Microsoft.AspNet.SignalR.Json.IJsonValue> vals)
+        {
+            yield return "";
+        }
+
         [HubCache(
-            CacheMethod:CacheMethod.Arguments|CacheMethod.StateKey,
-            StateKey:"User",
-            Minutes:5)]
+            CacheMethod: CacheMethod.CustomKey,
+            CustomKeyGenerator: typeof(APIHub),
+            MethodName: "SomeMethodName")]
         public object GetTest()
         {
             return new {

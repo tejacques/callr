@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Json;
+using System.Reflection;
 
 namespace CallR
 {
@@ -34,6 +35,13 @@ namespace CallR
         /// <param name="Minutes">The number of minutes in the TTL</param>
         /// <param name="Seconds">The number of seconds in the TTL</param>
         /// <param name="StateKey">The key in the hubstate to use.</param>
+        /// <param name="CustomKeyGenerator">
+        /// The type of the object that contains a function to generate
+        /// a custom key
+        /// </param>
+        /// <param name="MethodName">
+        /// The name of the method in the CustomKeyGenerator type
+        /// </param>
         public HubCacheAttribute(
             CacheMethod CacheMethod = 
                 CacheMethod.User
@@ -42,13 +50,30 @@ namespace CallR
             int Hours = 0,
             int Minutes = 5,
             int Seconds = 0,
-            string StateKey = "Username")
+            string StateKey = "Username",
+            Type CustomKeyGenerator = null,
+            string MethodName = "CustomKey")
         {
             this.CacheMethod = CacheMethod;
             this.TimeToLive = new TimeSpan(Hours, Minutes, Seconds);
             this.StateKey = StateKey;
             Cache = new LRUCache<string, object>(
                 Capacity, Hours, Minutes, Seconds);
+
+
+            if (null != CustomKeyGenerator)
+            {
+                CacheMethod = CacheMethod | CallR.CacheMethod.CustomKey;
+                // Set up the Custom Key
+                var method = CustomKeyGenerator.GetMethod(
+                    MethodName,
+                    BindingFlags.Static | BindingFlags.Public);
+
+                CustomKey = (Func<IList<IJsonValue>, IEnumerable<string>>)
+                    Delegate.CreateDelegate(
+                        typeof(Func<IList<IJsonValue>, IEnumerable<string>>),
+                        method);
+            }
         }
 
         /// <summary>
@@ -67,10 +92,10 @@ namespace CallR
         public string StateKey { get; set; }
 
         /// <summary>
-        /// Gets or sets a callback delegate which returns a list of strings to be
-        ///     used as the cache key
+        /// Gets or sets a callback delegate which returns a list of strings
+        /// to be used as the cache key
         /// </summary>
-        public Func<IList<IJsonValue>, IEnumerable<string>> CustomKey { get; set; }
+        internal Func<IList<IJsonValue>, IEnumerable<string>> CustomKey { get; set; }
     }
 
     /// <summary>
@@ -115,9 +140,9 @@ namespace CallR
         StateKey = 0x20,
 
         /// <summary>
-        /// Cache key is determined by a callback delegate
+        /// Cache key is determined by a custom delegate
         /// </summary>
-        Callback = 0x40,
+        CustomKey = 0x40,
 
         /// <summary>
         /// All methods
