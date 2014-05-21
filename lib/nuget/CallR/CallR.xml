@@ -129,7 +129,7 @@
             The Cache
             </summary>
         </member>
-        <member name="M:CallR.HubCacheAttribute.#ctor(CallR.CacheMethod,System.Int32,System.Int32,System.Int32,System.Int32,System.String)">
+        <member name="M:CallR.HubCacheAttribute.#ctor(CallR.CacheMethod,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Type,System.String)">
             <summary>
             Creates a new LRU Cache for a Hub's method.
             </summary>
@@ -141,6 +141,13 @@
             <param name="Minutes">The number of minutes in the TTL</param>
             <param name="Seconds">The number of seconds in the TTL</param>
             <param name="StateKey">The key in the hubstate to use.</param>
+            <param name="CustomKeyGenerator">
+            The type of the object that contains a function to generate
+            a custom key
+            </param>
+            <param name="MethodName">
+            The name of the method in the CustomKeyGenerator type
+            </param>
         </member>
         <member name="P:CallR.HubCacheAttribute.CacheMethod">
             <summary>
@@ -159,8 +166,8 @@
         </member>
         <member name="P:CallR.HubCacheAttribute.CustomKey">
             <summary>
-            Gets or sets a callback delegate which returns a list of strings to be
-                used as the cache key
+            Gets or sets a callback delegate which returns a list of strings
+            to be used as the cache key
             </summary>
         </member>
         <member name="T:CallR.CacheMethod">
@@ -203,9 +210,9 @@
             The value in the specified StateKey
             </summary>
         </member>
-        <member name="F:CallR.CacheMethod.Callback">
+        <member name="F:CallR.CacheMethod.CustomKey">
             <summary>
-            Cache key is determined by a callback delegate
+            Cache key is determined by a custom delegate
             </summary>
         </member>
         <member name="F:CallR.CacheMethod.All">
