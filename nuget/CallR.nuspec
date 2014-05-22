@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CallR</id>
-    <version>1.1.9</version>
+    <version>1.1.10</version>
     <title>CallR</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -18,6 +18,9 @@
     </summary>
     <releaseNotes>
         Notes:
+
+        Version 1.1.10
+            - Update Polarize dependency to 0.2.3 to include a bugfix on constraints
 
         Version 1.1.9
             - Fix #7 so that custom key functions can be used by passing a type with a static method. A little bit janky, but this is what Json.Net does, so it must be legit.
@@ -70,7 +73,7 @@
     <dependencies>
         <dependency id="Microsoft.AspNet.SignalR" version="[2.0.3,)" />
         <dependency id="CallR.JS" version="[1.1.1,)"/>
-        <dependency id="Polarize" version="[0.2.2,)"/>
+        <dependency id="Polarize" version="[0.2.3,)"/>
     </dependencies>
     <copyright>Copyright 2014</copyright>
     <tags>SignalR</tags>
