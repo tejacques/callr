@@ -115,6 +115,7 @@ namespace CallR.Sample.Hubs
             return Groups.Remove(this.Context.ConnectionId, channel);
         }
 
+        [Flags]
         public enum TestEnum
         {
             A = 1,

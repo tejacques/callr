@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNet.SignalR.Json;
+using Microsoft.AspNet.SignalR;
 
 namespace CallR
 {
@@ -25,7 +26,8 @@ namespace CallR
             // A non generic implementation of ToObject<T> on JToken
             using (var jsonReader = new StringReader(_value))
             {
-                var serializer = JsonSerializer.Create();
+                var serializer = GlobalHost
+                    .DependencyResolver.Resolve<JsonSerializer>();
                 return serializer.Deserialize(jsonReader, type);
             }
         }
