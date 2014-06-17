@@ -17,6 +17,11 @@
             <param name="invoke">The continuation of the hub pipeline</param>
             <returns>The altered hub pipeline</returns>
         </member>
+        <member name="T:CallR.CallRJRawValue">
+            <summary>
+            An implementation of IJsonValue over JSON.NET
+            </summary>
+        </member>
         <member name="T:CallR.CallRMethodDescriptorProvider">
             <summary>
             An implementation of IMethodDescriptorProvider which uses a
