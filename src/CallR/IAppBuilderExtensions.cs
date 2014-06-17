@@ -20,6 +20,10 @@ namespace CallR
         /// <param name="app">The Owin IAppBuilder</param>
         public static void ConfigureCallR(this IAppBuilder app)
         {
+            var lazyRequestParser = new Lazy<CallRHubRequestParser>();
+            GlobalHost.DependencyResolver.Register(typeof(IHubRequestParser),
+                () => lazyRequestParser.Value);
+
             var lazyParamResolver = new Lazy<CallRParameterResolver>();
             GlobalHost.DependencyResolver.Register(typeof(IParameterResolver),
                 () => lazyParamResolver.Value);
