@@ -37,7 +37,9 @@ namespace CallR.Sample.Hubs
         }
 
         [HubCache(
-            CacheMethod: CacheMethod.CustomKey,
+            CacheMethod: CacheMethod.CustomKey
+            | CacheMethod.ConnectionId
+            | CacheMethod.Arguments,
             CustomKeyGenerator: typeof(APIHub),
             MethodName: "SomeMethodName")]
         public object GetTest()
