@@ -23,7 +23,7 @@ namespace CallR
         private TimeSpan _ttl;
         private Timer _timer;
         private int _count;
-        private ReaderWriterLockSlim _rwlock;
+        private bool _refreshEntries;
 
         /// <summary>
         /// A least recently used cache with a time to live.
@@ -34,19 +34,23 @@ namespace CallR
         /// <param name="hours">The number of hours in the TTL</param>
         /// <param name="minutes">The number of minutes in the TTL</param>
         /// <param name="seconds">The number of seconds in the TTL</param>
+        /// <param name="refreshEntries">
+        /// Whether the TTL should be refreshed upon retrieval
+        /// </param>
         public LRUCache(
             int capacity,
             int hours = 0,
             int minutes = 0,
-            int seconds = 0)
+            int seconds = 0,
+            bool refreshEntries = true)
         {
             this._capacity = capacity;
             this._entries = new Dictionary<K, CacheNode>(this._capacity);
             this._head = null;
             this._tail = null;
             this._count = 0;
-            this._rwlock = new ReaderWriterLockSlim();
             this._ttl = new TimeSpan(hours, minutes, seconds);
+            this._refreshEntries = refreshEntries;
             if (this._ttl > TimeSpan.Zero)
             {
                 this._timer = new Timer(
@@ -104,7 +108,10 @@ namespace CallR
                 return false;
             }
 
-            MoveToHead(entry);
+            if (this._refreshEntries)
+            {
+                MoveToHead(entry);
+            }
 
             lock (entry)
             {
@@ -139,7 +146,7 @@ namespace CallR
                             // Reset with new values
                             entry.Key = key;
                             entry.Value = value;
-                            entry.LastAccessed = DateTime.Now;
+                            entry.LastAccessed = DateTime.UtcNow;
 
                             // Next and Prev don't need to be reset.
                             // Move to front will do the right thing.
@@ -151,7 +158,7 @@ namespace CallR
                             {
                                 Key = key,
                                 Value = value,
-                                LastAccessed = DateTime.Now
+                                LastAccessed = DateTime.UtcNow
                             };
                         }
                         _entries.Add(key, entry);
@@ -226,7 +233,7 @@ namespace CallR
             lock (this)
             {
                 var current = this._tail;
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 while (null != current
                     && (now - current.LastAccessed) > this._ttl)

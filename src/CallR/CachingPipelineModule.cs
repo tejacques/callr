@@ -76,17 +76,25 @@ namespace CallR
             }
 
             var list = new List<string>();
+            var callrHub = context.Hub as CallRHub;
+
+            //if (!string.IsNullOrEmpty(callrHub.Parameters.Cachebust))
+            if (null != callrHub.Parameters.Cachebust)
+            {
+                list.Add(callrHub.Parameters.Cachebust.ToString());
+            }
 
             if ((cacheAttribute.CacheMethod & CacheMethod.Arguments)
                 == CacheMethod.Arguments)
             {
-                var callrHub = context.Hub as CallRHub;
-                long sum = callrHub
+                var argList = string.Join("-",callrHub
                     .Parameters
                     .Params
-                    .Select(arg => arg.ToString().GetHashCode())
-                    .Sum(x => (long)x);
-                    list.Add(sum.ToString());
+                    .Select(arg => arg.ToString()));
+
+                var argumentsHash = argList.GetHashCode();
+
+                list.Add(argumentsHash.ToString());
             }
             if ((cacheAttribute.CacheMethod & CacheMethod.IP)
                 == CacheMethod.IP)
@@ -140,8 +148,6 @@ namespace CallR
             if(cacheAttribute.CacheMethod.HasFlag(CacheMethod.CustomKey)
                 && cacheAttribute.CustomKey != null)
             {
-                var callrHub = context.Hub as CallRHub;
-
                 list.AddRange(
                     cacheAttribute.CustomKey(
                         callrHub

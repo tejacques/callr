@@ -29,6 +29,11 @@ namespace CallR
         public int? Timeout { get; set; }
 
         /// <summary>
+        /// An optional cachebust parameter, used in caching
+        /// </summary>
+        public Newtonsoft.Json.Linq.JRaw Cachebust { get; set; }
+
+        /// <summary>
         /// The original params
         /// </summary>
         public IList<IJsonValue> Params { get; set; }

@@ -34,6 +34,9 @@ namespace CallR
         /// <param name="Hours">The number of hours in the TTL</param>
         /// <param name="Minutes">The number of minutes in the TTL</param>
         /// <param name="Seconds">The number of seconds in the TTL</param>
+        /// <param name="RefreshEntries">
+        /// Whether the TTL should be refreshed upon retrieval
+        /// </param>
         /// <param name="StateKey">The key in the hubstate to use.</param>
         /// <param name="CustomKeyGenerator">
         /// The type of the object that contains a function to generate
@@ -50,6 +53,7 @@ namespace CallR
             int Hours = 0,
             int Minutes = 5,
             int Seconds = 0,
+            bool RefreshEntries = true,
             string StateKey = "Username",
             Type CustomKeyGenerator = null,
             string MethodName = "CustomKey")
@@ -58,7 +62,7 @@ namespace CallR
             this.TimeToLive = new TimeSpan(Hours, Minutes, Seconds);
             this.StateKey = StateKey;
             Cache = new LRUCache<string, object>(
-                Capacity, Hours, Minutes, Seconds);
+                Capacity, Hours, Minutes, Seconds, RefreshEntries);
 
 
             if (null != CustomKeyGenerator)
