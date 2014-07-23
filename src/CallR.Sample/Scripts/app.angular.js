@@ -3,8 +3,8 @@
 /// <reference path="angular.js" />
 var chatApp = angular.module('chatApp', ['hubModule']);
 
-chatApp.controller('ChatController', ['$scope', 'hubFactory',
-    function ($scope, hubFactory) {
+chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
+    function ($scope, hubFactory, $q) {
         $scope.messages = [];
         $scope.channels = [];
 
@@ -12,7 +12,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
         $scope.message = null;
         $scope.channel = null;
 
-        $scope.display = { "channel": null };
+        $scope.display = { "channel": "TestChannel" };
 
         var hub = hubFactory.create("API");
 
@@ -66,7 +66,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
             hub.rpc.subscribe(channel).then((function (channel) {
                 return function () {
                     $scope.channels.push(channel);
-                    $scope.display.channel = channel;
+                    $scope.setChannel(channel);
                 };
             })(channel));
 
@@ -86,7 +86,35 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory',
             });
         };
 
-        $scope.connect = hub.connect;
+        var conn = $.connection.hub;
+        var connect = hub.connect;
+        $scope.connect = hub.connect = function (options, callback) {
+            var state = conn.state;
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+            var connectPromise = connect(options, callback);
+            if (state === $.signalR.connectionState.disconnected) {
+                connectPromise.then(function (value) {
+                    var promises = []
+
+                    if ($scope.channels.length > 0) {
+                        angular.forEach($scope.channels, function (channel) {
+                            promises.push(hub.rpc.subscribe(channel));
+                        });
+
+                        $q.all(promises).finally(function () {
+                            deferred.resolve(value);
+                        });
+
+                    } else {
+                        deferred.resolve(value);
+                    }
+                });
+            } else {
+                deferred.resolve();
+            }
+            return promise;
+        }
         $scope.disconnect = hub.disconnect;
 
         hub.bindEvent("message", $scope.addMessage, $scope);

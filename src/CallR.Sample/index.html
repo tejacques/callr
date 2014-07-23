@@ -52,7 +52,7 @@
                             </li>
                         </ul>
                         <ul class="messages" ng-model="messages">
-                            <li ng-repeat="message in messages | filter:display">
+                            <li ng-repeat="message in messages | filter:display:true">
                                 <span class="chat-from">{{message.name}}</span>
                                 <span class="chat-msg">{{message.message}}</span>
                             </li>
