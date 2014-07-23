@@ -83,9 +83,6 @@
     <None Include="Scripts\callr.angular.min.js.map">
       <DependentUpon>callr.angular.min.js</DependentUpon>
     </None>
-    <None Include="Scripts\callr.min.js.map">
-      <DependentUpon>callr.min.js</DependentUpon>
-    </None>
     <None Include="Scripts\jquery-2.1.0.min.map" />
   </ItemGroup>
   <ItemGroup />
@@ -95,9 +92,6 @@
       <DependentUpon>callr.angular.js</DependentUpon>
     </Content>
     <Content Include="Scripts\callr.js" />
-    <Content Include="Scripts\callr.min.js">
-      <DependentUpon>callr.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.0.js" />
     <Content Include="Scripts\jquery-2.1.0.min.js" />

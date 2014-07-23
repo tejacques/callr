@@ -97,15 +97,9 @@
     <Content Include="..\CallR\Scripts\callr.js">
       <Link>Scripts\callr.js</Link>
     </Content>
-    <Content Include="..\CallR\Scripts\callr.min.js">
-      <Link>Scripts\callr.min.js</Link>
-    </Content>
     <Content Include="jQuery.html" />
     <Content Include="..\CallR\Scripts\callr.angular.min.js.map">
       <Link>Scripts\callr.angular.min.js.map</Link>
-    </Content>
-    <Content Include="..\CallR\Scripts\callr.min.js.map">
-      <Link>Scripts\callr.min.js.map</Link>
     </Content>
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />

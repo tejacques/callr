@@ -109,6 +109,8 @@ var hubModule = (function () {
         var flushesInFlight = 0;
         var closeAfter = false;
 
+        hub.smartDisconnect = false;
+
         hub.flushRequests = function (cb) {
             // Increment the flushes in flight
             flushesInFlight++;
@@ -129,7 +131,12 @@ var hubModule = (function () {
 
             hub.connection.log("Flushing request queue");
 
-            if (closeAfter || conn.state === $.signalR.connectionState.disconnected) {
+            if (hub.smartDisconnect
+                && (closeAfter
+                   || conn.state === $.signalR.connectionState.disconnected)) {
+                hub.connection.log("smartDisconnect is enabled and the"
+                    + " connection was disconnected before this request."
+                    + " The connection will be closed after.");
                 closeAfter = true;
             }
 
