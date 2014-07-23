@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.0 AngularJS Module
+* callr JavaScript Library v1.1.1 AngularJS Module
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)

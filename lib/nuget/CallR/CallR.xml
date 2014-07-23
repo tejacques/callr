@@ -94,6 +94,11 @@
             An optional timeout
             </summary>
         </member>
+        <member name="P:CallR.CallRParams.Cachebust">
+            <summary>
+            An optional cachebust parameter, used in caching
+            </summary>
+        </member>
         <member name="P:CallR.CallRParams.Params">
             <summary>
             The original params
@@ -134,7 +139,7 @@
             The Cache
             </summary>
         </member>
-        <member name="M:CallR.HubCacheAttribute.#ctor(CallR.CacheMethod,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Type,System.String)">
+        <member name="M:CallR.HubCacheAttribute.#ctor(CallR.CacheMethod,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.String,System.Type,System.String)">
             <summary>
             Creates a new LRU Cache for a Hub's method.
             </summary>
@@ -145,6 +150,9 @@
             <param name="Hours">The number of hours in the TTL</param>
             <param name="Minutes">The number of minutes in the TTL</param>
             <param name="Seconds">The number of seconds in the TTL</param>
+            <param name="RefreshEntries">
+            Whether the TTL should be refreshed upon retrieval
+            </param>
             <param name="StateKey">The key in the hubstate to use.</param>
             <param name="CustomKeyGenerator">
             The type of the object that contains a function to generate
@@ -296,7 +304,7 @@
             <typeparam name="K">The key type.</typeparam>
             <typeparam name="V">The value type.</typeparam>
         </member>
-        <member name="M:CallR.LRUCache`2.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:CallR.LRUCache`2.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
             <summary>
             A least recently used cache with a time to live.
             </summary>
@@ -306,6 +314,9 @@
             <param name="hours">The number of hours in the TTL</param>
             <param name="minutes">The number of minutes in the TTL</param>
             <param name="seconds">The number of seconds in the TTL</param>
+            <param name="refreshEntries">
+            Whether the TTL should be refreshed upon retrieval
+            </param>
         </member>
         <member name="M:CallR.LRUCache`2.TryGetValue(`0,`1@)">
             <summary>
