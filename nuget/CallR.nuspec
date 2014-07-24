@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CallR</id>
-    <version>1.1.13</version>
+    <version>1.1.14</version>
     <title>CallR</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -18,6 +18,9 @@
     </summary>
     <releaseNotes>
         Notes:
+
+        Version 1.1.14
+            - Fix #10: Caching results based on their arguments now works correctly.
 
         Version 1.1.13
             - Add a new CallRParameter, Cachebust. This can be any JSON value and will act as part of the cache key for requests. Changing it will guarantee fresh results from cached hub calls.
