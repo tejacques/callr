@@ -37,5 +37,10 @@ namespace CallR
             // TODO: Implement when we implement better method overload resolution
             return true;
         }
+
+        public override string ToString()
+        {
+            return _value;
+        }
     }
 }

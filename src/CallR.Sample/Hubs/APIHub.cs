@@ -52,7 +52,8 @@ namespace CallR.Sample.Hubs
         }
 
         [HubCache(
-            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            CacheMethod: CacheMethod.Arguments
+            | CacheMethod.StateKey,
             StateKey: "User",
             Minutes: 5)]
         public object GetTest(
@@ -70,7 +71,8 @@ namespace CallR.Sample.Hubs
         }
 
         [HubCache(
-            CacheMethod: CacheMethod.Arguments | CacheMethod.StateKey,
+            CacheMethod: CacheMethod.Arguments
+            | CacheMethod.StateKey,
             StateKey: "User",
             Minutes: 5)]
         public object GetTestList(
