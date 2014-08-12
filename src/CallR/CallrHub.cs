@@ -17,5 +17,22 @@ namespace CallR
         /// The special parameters to CallR
         /// </summary>
         public CallRParams Parameters { get; set; }
+
+        //CallRGroupManager _groups;
+
+        ///// <summary>
+        ///// The group manager for this CallRHub instance.
+        ///// </summary>
+        //public new IGroupManager Groups
+        //{
+        //    get
+        //    {
+        //        return _groups;
+        //    }
+        //    set
+        //    {
+        //        _groups = new CallRGroupManager(value, this.Clients);
+        //    }
+        //}
     }
 }

@@ -43,6 +43,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
         };
 
         $scope.addMessage = function (message) {
+            console.log("Adding message: ", message);
             $scope.messages.push(message);
         };
 
@@ -71,28 +72,36 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
                 return;
             }
 
-            hub.rpc.subscribe(channel).then((function (channel) {
-                return function () {
-                    $scope.channels.push(channel);
-                    $scope.setChannel(channel);
-                };
-            })(channel));
-
+            hub.rpc.subscribe(channel);
             $scope.channel = null;
         };
+
+        hub.on('joinChannel', function (channel) {
+            if ($scope.channels.indexOf(channel) === -1) {
+                $scope.channels.push(channel);
+            }
+            $scope.setChannel(channel);
+            $scope.$apply();
+        });
 
         $scope.setChannel = function (channel) {
             $scope.display.channel = channel;
         };
 
         $scope.leaveChannel = function (channel) {
-            hub.rpc.unsubscribe(channel).then(function () {
-                $scope.channels.splice($scope.channels.indexOf(channel), 1);
-                if ($scope.display.channel === channel) {
-                    $scope.display.channel = null;
-                }
-            });
+            if (!channel) {
+                return;
+            }
+            hub.rpc.unsubscribe(channel);
         };
+
+        hub.on('leaveChannel', function (channel) {
+            $scope.channels.splice($scope.channels.indexOf(channel), 1);
+            if ($scope.display.channel === channel) {
+                $scope.display.channel = null;
+            }
+            $scope.$apply();
+        });
 
         var conn = $.connection.hub;
         var connect = hub.connect;
@@ -101,6 +110,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
             var deferred = $q.defer();
             var promise = deferred.promise;
             var connectPromise = connect(options, callback);
+            console.log("state: ", state);
             if (state === $.signalR.connectionState.disconnected) {
                 connectPromise.then(function (value) {
                     var promises = []

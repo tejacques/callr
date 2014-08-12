@@ -111,11 +111,13 @@ namespace CallR.Sample.Hubs
 
         public Task Subscribe(string channel)
         {
+            Clients.Caller.joinChannel(channel);
             return Groups.Add(this.Context.ConnectionId, channel);
         }
 
         public Task Unsubscribe(string channel)
         {
+            Clients.Caller.leaveChannel(channel);
             return Groups.Remove(this.Context.ConnectionId, channel);
         }
 

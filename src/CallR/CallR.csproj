@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachingPipelineModule.cs" />
+    <Compile Include="CallRGroupManager.cs" />
     <Compile Include="CallRHubRequestParser.cs" />
     <Compile Include="CallRJRawValue.cs" />
     <Compile Include="CallRMethodDescriptorProvider.cs" />
