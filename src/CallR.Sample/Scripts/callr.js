@@ -37,6 +37,9 @@ var hubModule = (function () {
 
     var $ = window.jQuery;
 
+    var urlOverride;
+    var connectOptions;
+
     if (typeof ($) !== "function") {
         // no jQuery!
         throw new Error(resources.nojQuery);
@@ -47,6 +50,17 @@ var hubModule = (function () {
         throw new Error(resources.noSignalR);
     }
 
+    var configure = function (conf) {
+        if (typeof (conf) !== "undefined") {
+            if (typeof (conf.url) === "string") {
+                $.connection.hub.url = urlOverride = conf.url;
+            }
+            if (typeof (conf.connectOptions) == "object") {
+                connectOptions = conf.connectOptions;
+            }
+        }
+    };
+
     // Initialize a new hub by name
     var init = function (hubName) {
 
@@ -54,7 +68,8 @@ var hubModule = (function () {
             hub = $.connection[hubName];
 
         if (typeof (conn.state) === 'undefined') {
-            conn = $.hubConnection();
+            conn = $.hubConnection(urlOverride);
+            
             $.connection.hub = conn;
         }
 
@@ -87,7 +102,10 @@ var hubModule = (function () {
         // We're using a function wrapper here instead
         // of .bind for better browser support.
         hub.connect = function (options, callback) {
-            return conn.start(options, callback);
+            options = $.extend({}, connectOptions, options);
+            return conn.start(
+                options,
+                callback);
         };
 
         // The context of conn.stop must be the conn
@@ -287,7 +305,8 @@ var hubModule = (function () {
     };
 
     $.callR = {
-        "init": init
+        "init": init,
+        "configure": configure
     };
 
     return $.callR;
