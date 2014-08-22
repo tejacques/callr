@@ -75,7 +75,7 @@ namespace CallR
 
                 CustomKey = (Func<CallRHub, IEnumerable<string>>)
                     Delegate.CreateDelegate(
-                        typeof(Func<IList<IJsonValue>, IEnumerable<string>>),
+                        typeof(Func<CallRHub, IEnumerable<string>>),
                         method);
             }
         }

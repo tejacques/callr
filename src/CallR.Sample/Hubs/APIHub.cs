@@ -31,7 +31,7 @@ namespace CallR.Sample.Hubs
         }
 
         public static IEnumerable<string> SomeMethodName(
-            IList<Microsoft.AspNet.SignalR.Json.IJsonValue> vals)
+            CallRHub hub)
         {
             yield return "";
         }
