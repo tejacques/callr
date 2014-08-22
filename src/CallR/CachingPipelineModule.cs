@@ -78,7 +78,6 @@ namespace CallR
             var list = new List<string>();
             var callrHub = context.Hub as CallRHub;
 
-            //if (!string.IsNullOrEmpty(callrHub.Parameters.Cachebust))
             if (null != callrHub.Parameters.Cachebust)
             {
                 list.Add(callrHub.Parameters.Cachebust.ToString());
