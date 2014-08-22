@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CallR</id>
-    <version>1.1.15</version>
+    <version>2.0.0</version>
     <title>CallR</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -19,42 +19,45 @@
     <releaseNotes>
         Notes:
 
-        Version 1.1.15
+        Version 2.0.0:
+            - Breaking Change: CustomKey functions now take in the CallRHub instead of the list of IJson objects. The objects can still be obtained through hub.Parameters.Params
+
+        Version 1.1.15:
             - Rebuilt binaries with latest versions of dependencies. Bumped dependency versions.
 
-        Version 1.1.14
+        Version 1.1.14:
             - Fix #10: Caching results based on their arguments now works correctly.
 
-        Version 1.1.13
+        Version 1.1.13:
             - Add a new CallRParameter, Cachebust. This can be any JSON value and will act as part of the cache key for requests. Changing it will guarantee fresh results from cached hub calls.
             - Add RefreshEntries option to CallRCache. Setting it to true (default: true) will update the TTL of entries that are pulled, while setting it to false will cause entries to expire after the TTL time from when they were entered.
             - Update dependency to CallR.JS 1.1.2 to get new configurable smartDisconnect option.
 
-        Version 1.1.12
+        Version 1.1.12:
             - Fix a bug with the IHubRequestParser causing the custom serializer to not be used in some cases.
 
-        Version 1.1.11
+        Version 1.1.11:
             - Add a custom IHubRequestParser to allow the request parser to use a custom serializer instead of the default SignalR JsonUtility serializer.
 
-        Version 1.1.10
+        Version 1.1.10:
             - Update Polarize dependency to 0.2.3 to include a bugfix on constraints
 
-        Version 1.1.9
+        Version 1.1.9:
             - Fix #7 so that custom key functions can be used by passing a type with a static method. A little bit janky, but this is what Json.Net does, so it must be legit.
 
-        Version 1.1.8
+        Version 1.1.8:
             - Correct libary versions
 
-        Version 1.1.7
+        Version 1.1.7:
             - Update dependency on Polarize to include a critical bug fix.
 
-        Version 1.1.6
+        Version 1.1.6:
             - Add CustomKey lambda for creating a cache key from function arguments.
 
-        Version 1.1.5
+        Version 1.1.5:
             - Update Packages compiled against
 
-        Version 1.1.4
+        Version 1.1.4:
             - Update Version dependencies for Polarize and SignalR
 
         Version 1.1.3:
@@ -89,7 +92,7 @@
     </releaseNotes>
     <dependencies>
         <dependency id="Microsoft.AspNet.SignalR" version="[2.1.1,)" />
-        <dependency id="CallR.JS" version="[1.1.2,)"/>
+        <dependency id="CallR.JS" version="[1.1.3,)"/>
         <dependency id="Polarize" version="[0.2.3,)"/>
     </dependencies>
     <copyright>Copyright 2014</copyright>
