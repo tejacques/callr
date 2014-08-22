@@ -55,7 +55,7 @@ var hubModule = (function () {
             if (typeof (conf.url) === "string") {
                 $.connection.hub.url = urlOverride = conf.url;
             }
-            if (typeof (conf.connectOptions) == "object") {
+            if (typeof (conf.connectOptions) === "object") {
                 connectOptions = conf.connectOptions;
             }
         }

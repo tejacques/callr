@@ -73,7 +73,7 @@ namespace CallR
                     MethodName,
                     BindingFlags.Static | BindingFlags.Public);
 
-                CustomKey = (Func<IList<IJsonValue>, IEnumerable<string>>)
+                CustomKey = (Func<CallRHub, IEnumerable<string>>)
                     Delegate.CreateDelegate(
                         typeof(Func<IList<IJsonValue>, IEnumerable<string>>),
                         method);
@@ -99,7 +99,7 @@ namespace CallR
         /// Gets or sets a callback delegate which returns a list of strings
         /// to be used as the cache key
         /// </summary>
-        internal Func<IList<IJsonValue>, IEnumerable<string>> CustomKey { get; set; }
+        internal Func<CallRHub, IEnumerable<string>> CustomKey { get; set; }
     }
 
     /// <summary>
