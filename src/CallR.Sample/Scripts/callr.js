@@ -67,13 +67,13 @@ var hubModule = (function () {
         var conn = $.connection.hub,
             hub = $.connection[hubName];
 
-        if (typeof (conn.state) === 'undefined') {
+        if (typeof (conn.state) === "undefined") {
             conn = $.hubConnection(urlOverride);
             
             $.connection.hub = conn;
         }
 
-        if (typeof (hub) === 'undefined') {
+        if (typeof (hub) === "undefined") {
             hub = conn.createHubProxy(hubName);
             $.connection[hubName] = hub;
         }
@@ -141,7 +141,7 @@ var hubModule = (function () {
 
             if (requestsRemaining === 0) {
                 hub.connection.log("No requests to flush");
-                if (typeof (cb) === 'function') {
+                if (typeof (cb) === "function") {
                     cb();
                 }
                 return;
@@ -172,7 +172,7 @@ var hubModule = (function () {
                         hub.disconnect();
                     }
 
-                    if (typeof (cb) === 'function') {
+                    if (typeof (cb) === "function") {
                         cb();
                     }
                 }
@@ -281,7 +281,7 @@ var hubModule = (function () {
         }
 
         hub.addRPC = function (name) {
-            if (typeof (name) === 'undefined') {
+            if (typeof (name) === "undefined") {
                 throw new Error("addRPC requires a name");
             }
 
@@ -305,8 +305,8 @@ var hubModule = (function () {
     };
 
     $.callR = {
-        "init": init,
-        "configure": configure
+        "configure": configure,
+        "init": init
     };
 
     return $.callR;
