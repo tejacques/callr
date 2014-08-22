@@ -38,6 +38,11 @@ namespace CallR.Sample
             };
             app.ConfigureCallR();
             app.MapSignalR(hubConfiguration);
+
+            // allow for testing another endpoint url
+            app.Map("/signalr-endpoint2/signalr", map => {
+                map.RunSignalR(hubConfiguration);
+            });
         }
     }
 }

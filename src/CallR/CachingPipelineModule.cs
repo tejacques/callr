@@ -151,8 +151,7 @@ namespace CallR
                 list.AddRange(
                     cacheAttribute.CustomKey(
                         callrHub
-                            .Parameters
-                            .Params));
+                            ));
                 
             }
 

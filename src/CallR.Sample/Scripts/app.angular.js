@@ -3,6 +3,14 @@
 /// <reference path="angular.js" />
 var chatApp = angular.module('chatApp', ['hubModule']);
 
+chatApp.config(function (hubFactoryProvider) {
+    hubFactoryProvider.configure({
+        url: "/signalr-endpoint2",
+        connectOptions: {
+            waitForPageLoad : false
+        }
+    });
+});
 chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
     function ($scope, hubFactory, $q) {
         $scope.messages = [];
@@ -111,7 +119,7 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
                     }
                 });
             } else {
-                deferred.resolve();
+                return connectPromise;
             }
             return promise;
         }
