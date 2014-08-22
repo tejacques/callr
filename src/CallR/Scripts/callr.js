@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.2
+* callr JavaScript Library v1.1.3
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
