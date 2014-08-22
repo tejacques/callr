@@ -50,7 +50,7 @@
                     throw new Error(resources.noSignalR);
                 }
 
-                if (typeof ($.callR) === 'undefined') {
+                if (typeof ($.callR) === "undefined") {
                     // no CallR!
                     throw new Error(resources.noCallR);
                 }
@@ -93,7 +93,7 @@
                                 callback.apply(this, args);
 
                                 // If a specific scope was supplied, use it.
-                                if (typeof (scope) !== 'undefined') {
+                                if (typeof (scope) !== "undefined") {
                                     scope.$digest();
                                 } else {
                                     $rootScope.$apply();
