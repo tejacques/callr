@@ -69,7 +69,6 @@ var hubModule = (function () {
 
         if (typeof (conn.state) === "undefined") {
             conn = $.hubConnection(urlOverride);
-            
             $.connection.hub = conn;
         }
 
