@@ -70,10 +70,13 @@ namespace CallR
                     .TryGetMethod(hub, method, out descriptor, parameters))
                 {
                     var paramsWithoutLast = parameters.ToList();
-                    paramsWithoutLast.RemoveAt(paramsWithoutLast.Count - 1);
+                    if (paramsWithoutLast.Count > 0)
+                    {
+                        paramsWithoutLast.RemoveAt(paramsWithoutLast.Count - 1);
 
-                    _provider.TryGetMethod(
-                        hub, method, out descriptor, paramsWithoutLast);
+                        _provider.TryGetMethod(
+                            hub, method, out descriptor, paramsWithoutLast);
+                    }
                 }
 
                 // If an executable method was found, cache it for future
