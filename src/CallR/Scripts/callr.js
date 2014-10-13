@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.3
+* callr JavaScript Library v1.1.4
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -214,7 +214,7 @@ var hubModule = (function () {
             var name = args.name;
             var params = args.params;
 
-            if (!args.params) {
+            if (typeof(args.params) === 'undefined') {
                 params = [];
             }
 
