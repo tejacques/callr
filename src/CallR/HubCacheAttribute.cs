@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Json;
 using System.Reflection;
+using Caching;
 
 namespace CallR
 {

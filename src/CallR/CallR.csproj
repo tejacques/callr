@@ -32,6 +32,9 @@
     <DocumentationFile>bin\Release\CallR.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LRUCache">
+      <HintPath>..\packages\LRUCache.0.1.0\lib\Net20\LRUCache.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.1.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -75,7 +78,6 @@
     <Compile Include="HubCacheAttribute.cs" />
     <Compile Include="HubUtility.cs" />
     <Compile Include="IAppBuilderExtensions.cs" />
-    <Compile Include="LRUCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +88,6 @@
   <ItemGroup>
     <Content Include="Scripts\callr.angular.js" />
     <Content Include="Scripts\callr.js" />
-    <Content Include="Scripts\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
