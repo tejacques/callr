@@ -304,7 +304,8 @@
 
     $.callR = {
         "configure": configure,
-        "init": init
+        "init": init,
+        "version": "1.1.4"
     };
 
     window.hubModule = $.callR;
