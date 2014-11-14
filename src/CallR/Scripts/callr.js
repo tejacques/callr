@@ -27,8 +27,7 @@
 */
 
 // Create hubModule to set up and utilize SignalR hubs
-/* exported hubModule */
-var hubModule = (function () {
+;(function() {
     "use strict";
     var resources = {
         nojQuery: "jQuery was not found. Please ensure jQuery is referenced before the CallR client JavaScript file.",
@@ -308,5 +307,5 @@ var hubModule = (function () {
         "init": init
     };
 
-    return $.callR;
+    window.hubModule = $.callR;
 })();
