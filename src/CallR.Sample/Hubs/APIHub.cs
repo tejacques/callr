@@ -119,6 +119,11 @@ namespace CallR.Sample.Hubs
             return Groups.Remove(this.Context.ConnectionId, channel);
         }
 
+        public Task Delay(int delay)
+        {
+            return Task.Delay(delay);
+        }
+
         [Flags]
         public enum TestEnum
         {

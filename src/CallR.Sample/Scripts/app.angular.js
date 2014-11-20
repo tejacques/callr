@@ -94,6 +94,15 @@ chatApp.controller('ChatController', ['$scope', 'hubFactory', '$q',
             });
         };
 
+        $scope.delay = function (delay) {
+            hub.rpc({
+                name: "delay",
+                params: delay
+            }).then(function () {
+                console.log("Finished delay request");
+            });
+        }
+
         var conn = $.connection.hub;
         var connect = hub.connect;
         $scope.connect = hub.connect = function (options, callback) {
