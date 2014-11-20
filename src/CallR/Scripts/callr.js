@@ -83,6 +83,41 @@
 
         hub.callR = true;
 
+        // State of requests in flight
+        var outstandingRequests = {};
+        var requestsInFlight = 0;
+        var requestId = 0;
+
+        // set all requests in flight on this hub to a
+        // failure state with the provided error
+        function failInvocationCallbacks (error) {
+            var requests = outstandingRequests;
+            var callbackIds = [];
+
+            for (requestId in requests) {
+                if (requests.hasOwnProperty(requestId)) {
+                    callbackIds.push(requests[requestId].internalId);
+                }
+            }
+
+            var callbacks = hub.connection._.invocationCallbacks;
+            for (var i = 0; i < callbackIds.length; i++) {
+                var id = callbackIds[i];
+                if (id in callbacks) {
+                    var cb = callbacks[id];
+                    cb.method.call(callback.scope, { E: error });
+                }
+            }
+        };
+
+        hub.connection.reconnecting(function () {
+            failInvocationCallbacks("Connection started reconnecting before invocation result was received.");
+        });
+
+        hub.connection.disconnected(function () {
+            failInvocationCallbacks("Connection was disconnected before invocation result was received.");
+        });
+
         hub.bindEvent = hub.on;
         hub.unbindEvent = hub.off;
 
@@ -122,15 +157,11 @@
             return deferred.promise();
         }
 
-        var flushesInFlight = 0;
         var closeAfter = false;
 
         hub.smartDisconnect = false;
 
         hub.flushRequests = function (cb) {
-            // Increment the flushes in flight
-            flushesInFlight++;
-
             // Swap out the request queue
             var rq = _requestQueue;
             _requestQueue = [];
@@ -156,14 +187,18 @@
                 closeAfter = true;
             }
 
-            var requestComplete = function () {
+            var requestComplete = function (id) {
+                if (id in outstandingRequests) {
+                    delete outstandingRequests[id];
+                    requestsInFlight -= 1;
+                }
+
+
                 requestsRemaining--;
                 if (requestsRemaining === 0) {
-                    // All requests complete, decrement flushesInFlight
-                    flushesInFlight--;
 
                     hub.connection.log("Finished flushing request queue");
-                    if (closeAfter && 0 === flushesInFlight) {
+                    if (closeAfter && 0 === requestsInFlight) {
                         // Reset closeAfter
                         closeAfter = false;
                         hub.connection.log("Closing connection");
@@ -177,7 +212,22 @@
             };
 
             function _queueRequest(request, deferred) {
-                request().done(function (response) {
+                var internalId = hub.connection._.invocationCallbackId.toString();
+                var requestPromise = request();
+
+                // Add requests to the outstanding requests
+                var id = requestId.toString();
+                requestId += 1;
+                requestsInFlight += 1;
+                outstandingRequests[id] = {
+                    id: id,
+                    internalId: internalId,
+                    request: request,
+                    promise: requestPromise,
+                    deferred: deferred
+                };
+
+                requestPromise.done(function (response) {
                     if (deferred) {
                         deferred.resolve(response);
                     }
@@ -186,7 +236,7 @@
                         deferred.reject(error);
                     }
                 }).always(function () {
-                    requestComplete();
+                    requestComplete(id);
                 });
             }
 
