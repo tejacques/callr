@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.4
+* callr JavaScript Library v1.1.5
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -355,7 +355,7 @@
     $.callR = {
         "configure": configure,
         "init": init,
-        "version": "1.1.4"
+        "version": "1.1.5"
     };
 
     window.hubModule = $.callR;
