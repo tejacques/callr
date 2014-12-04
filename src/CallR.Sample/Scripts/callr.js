@@ -1,5 +1,5 @@
 ﻿/*!
-* callr JavaScript Library v1.1.4
+* callr JavaScript Library v1.1.5
 * https://github.com/tejacques/callr
 *
 * Distributed in whole under the terms of the MIT License (MIT)
@@ -60,11 +60,6 @@
         }
     };
 
-    // State of requests in flight
-    var outstandingRequests = {};
-    var requestsInFlight = 0;
-    var requestId = 0;
-
     // Initialize a new hub by name
     var init = function (hubName) {
 
@@ -87,6 +82,41 @@
         }
 
         hub.callR = true;
+
+        // State of requests in flight
+        var outstandingRequests = {};
+        var requestsInFlight = 0;
+        var requestId = 0;
+
+        // set all requests in flight on this hub to a
+        // failure state with the provided error
+        function failInvocationCallbacks (error) {
+            var requests = outstandingRequests;
+            var callbackIds = [];
+
+            for (requestId in requests) {
+                if (requests.hasOwnProperty(requestId)) {
+                    callbackIds.push(requests[requestId].internalId);
+                }
+            }
+
+            var callbacks = hub.connection._.invocationCallbacks;
+            for (var i = 0; i < callbackIds.length; i++) {
+                var id = callbackIds[i];
+                if (id in callbacks) {
+                    var cb = callbacks[id];
+                    cb.method.call(callback.scope, { E: error });
+                }
+            }
+        };
+
+        hub.connection.reconnecting(function () {
+            failInvocationCallbacks("Connection started reconnecting before invocation result was received.");
+        });
+
+        hub.connection.disconnected(function () {
+            failInvocationCallbacks("Connection was disconnected before invocation result was received.");
+        });
 
         hub.bindEvent = hub.on;
         hub.unbindEvent = hub.off;
@@ -182,6 +212,7 @@
             };
 
             function _queueRequest(request, deferred) {
+                var internalId = hub.connection._.invocationCallbackId.toString();
                 var requestPromise = request();
 
                 // Add requests to the outstanding requests
@@ -189,6 +220,8 @@
                 requestId += 1;
                 requestsInFlight += 1;
                 outstandingRequests[id] = {
+                    id: id,
+                    internalId: internalId,
                     request: request,
                     promise: requestPromise,
                     deferred: deferred
@@ -322,7 +355,7 @@
     $.callR = {
         "configure": configure,
         "init": init,
-        "version": "1.1.4"
+        "version": "1.1.5"
     };
 
     window.hubModule = $.callR;
